@@ -1,22 +1,30 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
-import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { ERROR_MESSAGE } from 'src/constants/message';
+import { LoginDto } from './dto/login.dto';
+import { JwtPayload } from 'src/interface/jwt-payload';
+import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
-export class AuthService {
+export class SignInService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private jwtService: JwtService,
   ) {}
+
+  async generateToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
+  }
 
   async comparePassword(password: string, hashPassword: string) {
     return await bcrypt.compare(password, hashPassword);
   }
 
-  async login(loginDto: LoginDto): Promise<UserEntity> {
+  async login(loginDto: LoginDto): Promise<string> {
     const isEmail = /\S+@\S+\.\S+/.test(loginDto.username);
     //login option
     const option = isEmail
@@ -38,6 +46,12 @@ export class AuthService {
       throw new BadRequestException({ messsage: ERROR_MESSAGE.WRONG_PASSWORD });
     }
 
-    return user;
+    const payload: JwtPayload = {
+      userId: user.user_id,
+      userEmail: user.user_email,
+      role: user.role,
+    };
+
+    return await this.generateToken(payload);
   }
 }
