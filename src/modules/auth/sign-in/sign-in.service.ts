@@ -5,8 +5,8 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { ERROR_MESSAGE } from 'src/constants/message';
 import { LoginDto } from './dto/login.dto';
-import { JwtPayload } from 'src/interface/jwt-payload';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from 'src/interface/jwt-payload';
 
 @Injectable()
 export class SignInService {
