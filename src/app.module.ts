@@ -21,13 +21,10 @@ import { join } from 'path';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'admin',
-      database: 'opshee',
+      url: process.env.POSTGRES_URL,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    }),
+      ssl: { rejectUnauthorized: false },
+    }),    
     CONFIG_DATABASE.load_env,
   ],
 })
