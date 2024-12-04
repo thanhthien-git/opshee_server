@@ -24,7 +24,7 @@ import { join } from 'path';
       url: process.env.POSTGRES_URL,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       ssl: { rejectUnauthorized: false },
-    }),    
+    }),
     CONFIG_DATABASE.load_env,
   ],
 })
