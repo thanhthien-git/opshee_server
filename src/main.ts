@@ -11,8 +11,5 @@ async function bootstrap() {
   await app.listen(port, () => {
     console.log(`server is now running on port: ${port}`);
   });
-
-  console.log('you are in this step');
-  
 }
 bootstrap();
