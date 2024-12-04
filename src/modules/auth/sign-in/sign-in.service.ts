@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { ERROR_MESSAGE } from 'src/constants/message';
+import { ERROR_MESSAGE } from '../../../constants/message';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/interface/jwt-payload';
