@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from '../../../entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignUpDto } from './dto/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from 'src/constants/message';
