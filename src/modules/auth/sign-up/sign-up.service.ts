@@ -38,6 +38,8 @@ export class SignUpService {
       user_password: hashedPassword,
       user_create_at: new Date(),
       user_update_at: new Date(),
+      isBanned: true,
+      isDeleted: true,
     };
 
     const user = this.userRepository.create(createRequest);
