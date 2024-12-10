@@ -42,7 +42,7 @@ let SignInService = class SignInService {
         }
         const isMatch = await this.comparePassword(loginDto.password, user.user_password);
         if (!isMatch) {
-            throw new common_1.BadRequestException({ messsage: message_1.ERROR_MESSAGE.WRONG_PASSWORD });
+            throw new common_1.BadRequestException({ message: message_1.ERROR_MESSAGE.WRONG_PASSWORD });
         }
         const payload = {
             userId: user.user_id,

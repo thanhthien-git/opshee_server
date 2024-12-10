@@ -43,7 +43,7 @@ export class SignInService {
     );
 
     if (!isMatch) {
-      throw new BadRequestException({ messsage: ERROR_MESSAGE.WRONG_PASSWORD });
+      throw new BadRequestException({ message: ERROR_MESSAGE.WRONG_PASSWORD });
     }
 
     const payload: JwtPayload = {
