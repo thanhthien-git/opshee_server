@@ -13,7 +13,6 @@ export class JwtStategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log(payload);
     return { ...payload };
   }
 }

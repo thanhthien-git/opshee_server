@@ -25,4 +25,6 @@ export class SignUpDto {
   @IsDate()
   @Type(() => Date)
   dayOfBirth: Date;
+
+  role: string;
 }
