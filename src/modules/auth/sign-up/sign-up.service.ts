@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../../../entities/user.entity';
+import { UserEntity } from '../../../models/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../dto/sign-up/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from '../../../constants/message';
@@ -57,8 +57,8 @@ export class SignUpService {
       user_create_at: new Date(),
       user_update_at: new Date(),
       role: userDto.role,
-      isBanned: true,
-      isDeleted: true,
+      isBanned: false,
+      isDeleted: false,
     };
 
     const user = this.userRepository.create(createRequest);

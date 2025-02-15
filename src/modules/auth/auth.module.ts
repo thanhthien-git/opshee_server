@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { SignInService } from './sign-in/sign-in.service';
 import { SignUpService } from './sign-up/sign-up.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from 'src/models/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
