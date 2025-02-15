@@ -1,6 +1,6 @@
-import { UserEntity } from '../../../entities/user.entity';
+import { UserEntity } from '../../../models/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto } from '../dto/sign-in/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/interface/jwt-payload';
 export declare class SignInService {

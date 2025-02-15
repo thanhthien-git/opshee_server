@@ -12,15 +12,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SignUpService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_entity_1 = require("../../../entities/user.entity");
+const user_entity_1 = require("../../../models/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
 const bcrypt = require("bcrypt");
 let SignUpService = class SignUpService {
-    async checkIsExist(userPhone) {
-        return await this.userRepository.findOneBy({
-            user_phone: userPhone,
+    async checkIsExist(validateDto) {
+        const user = await this.userRepository.findOne({
+            where: [
+                { user_email: validateDto.userEmail },
+                { user_phone: validateDto.userPhone },
+                { user_name: validateDto.userName },
+            ],
         });
+        if (user) {
+            const existingInfo = [];
+            if (user.user_name === validateDto.userName)
+                existingInfo.push('Tên người dùng');
+            if (user.user_phone === validateDto.userPhone)
+                existingInfo.push('Số điện thoại');
+            if (user.user_email === validateDto.userEmail)
+                existingInfo.push('Email');
+            throw new common_1.BadRequestException({
+                message: message_1.ERROR_AUTH.EXISTED(`${existingInfo.join(', ')}`),
+            });
+        }
     }
     async signUp(userDto) {
         const { userPhone } = userDto;
@@ -42,8 +58,9 @@ let SignUpService = class SignUpService {
             user_password: hashedPassword,
             user_create_at: new Date(),
             user_update_at: new Date(),
-            isBanned: true,
-            isDeleted: true,
+            role: userDto.role,
+            isBanned: false,
+            isDeleted: false,
         };
         const user = this.userRepository.create(createRequest);
         await this.userRepository.save(user);

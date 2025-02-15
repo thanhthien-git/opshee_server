@@ -21,7 +21,6 @@ let JwtStategy = class JwtStategy extends (0, passport_1.PassportStrategy)(passp
         });
     }
     async validate(payload) {
-        console.log(payload);
         return { ...payload };
     }
 };
