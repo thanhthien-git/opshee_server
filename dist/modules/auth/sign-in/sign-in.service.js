@@ -16,20 +16,22 @@ exports.SignInService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../../models/entities/user.entity");
-const bcrypt = require("bcrypt");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
 const jwt_1 = require("@nestjs/jwt");
+const mail_service_1 = require("../../mail/mail.service");
+const users_service_1 = require("../../users/users.service");
+const brcypt_service_1 = require("../../bcrypt/brcypt.service");
 let SignInService = class SignInService {
-    constructor(userRepository, jwtService) {
+    constructor(userRepository, jwtService, emailService, userService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.emailService = emailService;
+        this.userService = userService;
+        this.TOKEN_EXPIRE_TIME = 60;
     }
     async generateToken(payload) {
         return this.jwtService.sign(payload);
-    }
-    async comparePassword(password, hashPassword) {
-        return await bcrypt.compare(password, hashPassword);
     }
     async login(loginDto) {
         const isEmail = /\S+@\S+\.\S+/.test(loginDto.username);
@@ -40,7 +42,7 @@ let SignInService = class SignInService {
         if (!user) {
             throw new common_1.BadRequestException({ message: message_1.ERROR_MESSAGE.USER_NOT_FOUND });
         }
-        const isMatch = await this.comparePassword(loginDto.password, user.user_password);
+        const isMatch = await brcypt_service_1.BcryptService.comparePassword(loginDto.password, user.user_password);
         if (!isMatch) {
             throw new common_1.BadRequestException({ message: message_1.ERROR_MESSAGE.WRONG_PASSWORD });
         }
@@ -57,5 +59,7 @@ exports.SignInService = SignInService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        mail_service_1.EmailService,
+        users_service_1.UsersService])
 ], SignInService);

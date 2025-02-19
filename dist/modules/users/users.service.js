@@ -27,6 +27,22 @@ let UsersService = class UsersService {
         const { isBanned, isDeleted, user_password, ...props } = user;
         return { ...props };
     }
+    async updateInfo(data) {
+        try {
+            const { userId, user_first_name, user_last_name, date_of_birth } = data;
+            await this.userRepository.update(Number(userId), {
+                user_first_name: user_first_name,
+                user_last_name: user_last_name,
+                date_of_birth: date_of_birth,
+            });
+            return {
+                message: message_1.SUCCESS_MESSAGE.UPDATE_SUCCESS,
+            };
+        }
+        catch (error) {
+            throw new common_1.BadRequestException({ message: message_1.ERROR_MESSAGE.UPDATE_FAILED });
+        }
+    }
     async changePassword(data) {
         try {
             const { userId, newPassword } = data;

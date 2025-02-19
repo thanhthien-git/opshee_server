@@ -15,12 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
 const product_service_1 = require("./product.service");
+const product_redis_service_1 = require("./product.redis.service");
 let ProductController = class ProductController {
-    constructor(productService) {
+    constructor(productService, redisProductService) {
         this.productService = productService;
+        this.redisProductService = redisProductService;
     }
     async getProductById(id) {
-        return await this.productService.getProductById(id);
+        return await this.redisProductService.getProductById(id);
     }
 };
 exports.ProductController = ProductController;
@@ -33,5 +35,6 @@ __decorate([
 ], ProductController.prototype, "getProductById", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
-    __metadata("design:paramtypes", [product_service_1.ProductService])
+    __metadata("design:paramtypes", [product_service_1.ProductService,
+        product_redis_service_1.RedisProductService])
 ], ProductController);

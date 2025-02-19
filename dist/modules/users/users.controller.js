@@ -18,6 +18,7 @@ const users_service_1 = require("./users.service");
 const role_guard_1 = require("../../guards/role/role.guard");
 const message_1 = require("../../constants/message");
 const regex_1 = require("../../constants/regex");
+const update_info_dto_1 = require("./dto/update-info.dto");
 let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
@@ -37,6 +38,10 @@ let UsersController = class UsersController {
         };
         return this.userService.changePassword(data);
     }
+    async updateUser(req, data) {
+        const updateData = { userId: req.user.userId, ...data };
+        return await this.userService.updateInfo(updateData);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -54,6 +59,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.Patch)('/update-user'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, update_info_dto_1.UpdateInfoDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateUser", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('/users'),
     (0, common_1.UseGuards)(role_guard_1.RolesGuard),

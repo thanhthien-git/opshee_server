@@ -19,6 +19,7 @@ const sign_up_service_1 = require("./sign-up/sign-up.service");
 const login_dto_1 = require("./dto/sign-in/login.dto");
 const validate_dto_1 = require("./dto/sign-up/validate.dto");
 const sigu_up_dto_1 = require("./dto/sign-up/sigu-up.dto");
+const forgot_password_dto_1 = require("./dto/forgot-password.dto");
 let AuthController = class AuthController {
     constructor(signInService, signUpService) {
         this.signInService = signInService;
@@ -32,6 +33,9 @@ let AuthController = class AuthController {
     }
     async signUp(signUpDto) {
         return this.signUpService.signUp(signUpDto);
+    }
+    async requestForgotPassword(data) {
+        return data;
     }
 };
 exports.AuthController = AuthController;
@@ -57,6 +61,13 @@ __decorate([
     __metadata("design:paramtypes", [sigu_up_dto_1.SignUpDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signUp", null);
+__decorate([
+    (0, common_1.Post)('/forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgot_password_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "requestForgotPassword", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [sign_in_service_1.SignInService,

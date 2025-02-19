@@ -19,6 +19,7 @@ const jwt_1 = require("@nestjs/jwt");
 const config_2 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const product_module_1 = require("./modules/products/product.module");
+const redis_module_1 = require("./modules/redis/redis/redis.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(auth_middleware_1.AuthMiddleware).forRoutes('users');
@@ -31,6 +32,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             users_module_1.UsersModule,
             product_module_1.ProductModule,
+            redis_module_1.RedisModule,
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'public'),
                 exclude: ['/api*'],

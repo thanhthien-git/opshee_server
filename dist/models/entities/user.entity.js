@@ -74,6 +74,14 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text', default: 'user' }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "role", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'text', default: false }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "verification_code", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' }),
+    __metadata("design:type", Date)
+], UserEntity.prototype, "verification_code_exp", void 0);
 exports.UserEntity = UserEntity = __decorate([
     (0, typeorm_1.Entity)('users')
 ], UserEntity);

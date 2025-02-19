@@ -12,6 +12,9 @@ const product_controller_1 = require("./product.controller");
 const product_service_1 = require("./product.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const products_scheme_1 = require("../../models/scheme/products.scheme");
+const redis_module_1 = require("../redis/redis/redis.module");
+const redis_service_1 = require("../redis/redis/redis.service");
+const product_redis_service_1 = require("./product.redis.service");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -19,8 +22,9 @@ exports.ProductModule = ProductModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: products_scheme_1.Product.name, schema: products_scheme_1.ProductSchema }]),
+            redis_module_1.RedisModule,
         ],
         controllers: [product_controller_1.ProductController],
-        providers: [product_service_1.ProductService],
+        providers: [product_service_1.ProductService, redis_service_1.RedisService, product_redis_service_1.RedisProductService],
     })
 ], ProductModule);

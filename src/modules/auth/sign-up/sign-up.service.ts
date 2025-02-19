@@ -6,6 +6,7 @@ import { SignUpDto } from '../dto/sign-up/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from '../../../constants/message';
 import * as bcrypt from 'bcrypt';
 import { ValidateDto } from '../dto/sign-up/validate.dto';
+import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
 
 @Injectable()
 export class SignUpService {
@@ -36,8 +37,8 @@ export class SignUpService {
   }
 
   async signUp(userDto: SignUpDto): Promise<any> {
-    const { userPhone } = userDto;
-    const hashedPassword = bcrypt.hashSync(userDto.userPassword, 10);
+    const { userPhone, userPassword } = userDto;
+    const hashedPassword = await BcryptService.encryptString(userPassword);
     const existPhone = await this.userRepository.findOneBy({
       user_phone: userPhone,
     });

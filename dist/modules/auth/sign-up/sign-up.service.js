@@ -15,7 +15,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../../models/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
-const bcrypt = require("bcrypt");
+const brcypt_service_1 = require("../../bcrypt/brcypt.service");
 let SignUpService = class SignUpService {
     async checkIsExist(validateDto) {
         const user = await this.userRepository.findOne({
@@ -39,8 +39,8 @@ let SignUpService = class SignUpService {
         }
     }
     async signUp(userDto) {
-        const { userPhone } = userDto;
-        const hashedPassword = bcrypt.hashSync(userDto.userPassword, 10);
+        const { userPhone, userPassword } = userDto;
+        const hashedPassword = await brcypt_service_1.BcryptService.encryptString(userPassword);
         const existPhone = await this.userRepository.findOneBy({
             user_phone: userPhone,
         });

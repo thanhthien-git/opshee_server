@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './modules/products/product.module';
+import { RedisModule } from './modules/redis/redis/redis.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProductModule } from './modules/products/product.module';
     AuthModule,
     UsersModule,
     ProductModule,
+    RedisModule,
     //render landing page
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),

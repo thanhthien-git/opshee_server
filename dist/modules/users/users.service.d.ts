@@ -1,4 +1,5 @@
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateInfoDto } from './dto/update-info.dto';
 export declare class UsersService {
     private userRepository;
     getUserById(id: number): Promise<{
@@ -13,6 +14,11 @@ export declare class UsersService {
         user_address?: object;
         date_of_birth?: Date;
         role?: string;
+        verification_code?: string;
+        verification_code_exp?: Date;
+    }>;
+    updateInfo(data: UpdateInfoDto): Promise<{
+        message: string;
     }>;
     changePassword(data: ChangePasswordDto): Promise<{
         message: string;

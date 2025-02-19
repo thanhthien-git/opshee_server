@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { RolesGuard } from 'src/guards/role/role.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ERROR_MESSAGE } from 'src/constants/message';
 import { passwordRegex } from 'src/constants/regex';
+import { UpdateInfoDto } from './dto/update-info.dto';
 
 @Controller('/users')
 @UseGuards(RolesGuard)
@@ -35,5 +37,11 @@ export class UsersController {
       newPassword: newPassword,
     };
     return this.userService.changePassword(data);
+  }
+
+  @Patch('/update-user')
+  async updateUser(@Req() req, @Body() data: UpdateInfoDto) {
+    const updateData: UpdateInfoDto = { userId: req.user.userId, ...data };
+    return await this.userService.updateInfo(updateData);
   }
 }

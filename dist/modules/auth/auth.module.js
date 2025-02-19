@@ -15,6 +15,9 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../models/entities/user.entity");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const mail_service_1 = require("../mail/mail.service");
+const users_service_1 = require("../users/users.service");
+const brcypt_service_1 = require("../bcrypt/brcypt.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -32,6 +35,12 @@ exports.AuthModule = AuthModule = __decorate([
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [sign_in_service_1.SignInService, sign_up_service_1.SignUpService],
+        providers: [
+            sign_in_service_1.SignInService,
+            sign_up_service_1.SignUpService,
+            mail_service_1.EmailService,
+            users_service_1.UsersService,
+            brcypt_service_1.BcryptService,
+        ],
     })
 ], AuthModule);

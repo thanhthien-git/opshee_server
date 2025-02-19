@@ -53,4 +53,10 @@ export class UserEntity {
 
   @Column({ type: 'text', default: 'user' })
   role?: string;
+
+  @Column({ type: 'text', default: false })
+  verification_code?: string;
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  verification_code_exp?: Date;
 }

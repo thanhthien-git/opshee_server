@@ -13,4 +13,6 @@ export declare class UserEntity {
     isDeleted?: boolean;
     isBanned?: boolean;
     role?: string;
+    verification_code?: string;
+    verification_code_exp?: Date;
 }

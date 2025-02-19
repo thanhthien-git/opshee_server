@@ -4,6 +4,7 @@ import { SignUpService } from './sign-up/sign-up.service';
 import { LoginDto } from './dto/sign-in/login.dto';
 import { ValidateDto } from './dto/sign-up/validate.dto';
 import { SignUpDto } from './dto/sign-up/sigu-up.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +28,13 @@ export class AuthController {
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.signUpService.signUp(signUpDto);
+  }
+  //#endregion
+
+  //#region : Forgot password - Reset password
+  @Post('/forgot-password')
+  async requestForgotPassword(@Body() data: ForgotPasswordDto) {
+    return data
   }
   //#endregion
 }

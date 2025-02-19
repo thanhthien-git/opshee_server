@@ -8,7 +8,7 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
-  async getProductById(id: string) {
+  async getProductById(id: string): Promise<void> {
     return await this.productModel.findById(id);
   }
 }

@@ -1,4 +1,5 @@
 import { UsersService } from './users.service';
+import { UpdateInfoDto } from './dto/update-info.dto';
 export declare class UsersController {
     private readonly userService;
     constructor(userService: UsersService);
@@ -14,8 +15,13 @@ export declare class UsersController {
         user_address?: object;
         date_of_birth?: Date;
         role?: string;
+        verification_code?: string;
+        verification_code_exp?: Date;
     }>;
     changePassword(req: any, newPassword: string): Promise<{
+        message: string;
+    }>;
+    updateUser(req: any, data: UpdateInfoDto): Promise<{
         message: string;
     }>;
 }

@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/models/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EmailService } from '../mail/mail.service';
+import { UsersService } from '../users/users.service';
+import { BcryptService } from '../bcrypt/brcypt.service';
 
 @Module({
   imports: [
@@ -20,6 +23,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [SignInService, SignUpService],
+  providers: [
+    SignInService,
+    SignUpService,
+    EmailService,
+    UsersService,
+    BcryptService,
+  ],
 })
 export class AuthModule {}

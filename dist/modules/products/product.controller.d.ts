@@ -1,16 +1,8 @@
 import { ProductService } from './product.service';
+import { RedisProductService } from './product.redis.service';
 export declare class ProductController {
     private readonly productService;
-    constructor(productService: ProductService);
-    getProductById(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("../../models/scheme/products.scheme").Product> & import("../../models/scheme/products.scheme").Product & {
-        _id: import("mongoose").Types.ObjectId;
-    } & {
-        __v: number;
-    }> & import("mongoose").Document<unknown, {}, import("../../models/scheme/products.scheme").Product> & import("../../models/scheme/products.scheme").Product & {
-        _id: import("mongoose").Types.ObjectId;
-    } & {
-        __v: number;
-    } & Required<{
-        _id: import("mongoose").Types.ObjectId;
-    }>>;
+    private readonly redisProductService;
+    constructor(productService: ProductService, redisProductService: RedisProductService);
+    getProductById(id: string): Promise<void>;
 }
