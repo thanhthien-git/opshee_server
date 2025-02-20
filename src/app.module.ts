@@ -11,6 +11,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './modules/products/product.module';
 import { RedisModule } from './modules/redis/redis/redis.module';
+import { DatabaseModule } from './modules/database/database.module';
+import { TokenModule } from './modules/jwt/jwt.module';
 
 @Module({
   imports: [
@@ -29,24 +31,9 @@ import { RedisModule } from './modules/redis/redis/redis.module';
         immutable: true,
       },
     }),
-    //connect database
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.POSTGRES_URL,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      ssl: { rejectUnauthorized: false },
-    }),
-    CONFIG_DATABASE.load_env,
-    MongooseModule.forRoot(process.env.MONGODB_URL),
+    DatabaseModule,
     //register for jwt service
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1h' },
-      }),
-    }),
+    TokenModule,
   ],
 })
 export class AppModule implements NestModule {

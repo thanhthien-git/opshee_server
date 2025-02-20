@@ -9,12 +9,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductModule = void 0;
 const common_1 = require("@nestjs/common");
 const product_controller_1 = require("./product.controller");
-const product_service_1 = require("./product.service");
 const mongoose_1 = require("@nestjs/mongoose");
-const products_scheme_1 = require("../../models/scheme/products.scheme");
+const products_scheme_1 = require("../../models/schemes/products.scheme");
 const redis_module_1 = require("../redis/redis/redis.module");
 const redis_service_1 = require("../redis/redis/redis.service");
-const product_redis_service_1 = require("./product.redis.service");
+const product_service_1 = require("./product.service");
+const product_repository_1 = require("./product.repository");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -25,6 +25,6 @@ exports.ProductModule = ProductModule = __decorate([
             redis_module_1.RedisModule,
         ],
         controllers: [product_controller_1.ProductController],
-        providers: [product_service_1.ProductService, redis_service_1.RedisService, product_redis_service_1.RedisProductService],
+        providers: [product_repository_1.ProductRepository, redis_service_1.RedisService, product_service_1.RedisProductService],
     })
 ], ProductModule);

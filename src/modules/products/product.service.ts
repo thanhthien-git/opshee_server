@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Product, ProductDocument } from 'src/models/scheme/products.scheme';
+import { RedisService } from '../redis/redis/redis.service';
+import { ProductRepository } from './product.repository';
 
 @Injectable()
-export class ProductService {
+export class RedisProductService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    private readonly productRepository: ProductRepository,
+    private readonly redisService: RedisService,
   ) {}
-  async getProductById(id: string): Promise<void> {
-    return await this.productModel.findById(id);
+
+  async getProductById(id: string) {
+    return await this.redisService.getOrSet(id, async () => {
+      return this.productRepository.getProductById(id);
+    });
   }
 }

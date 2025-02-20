@@ -1,8 +1,6 @@
-import { ProductService } from './product.service';
-import { RedisProductService } from './product.redis.service';
+import { RedisProductService } from './product.service';
 export declare class ProductController {
-    private readonly productService;
     private readonly redisProductService;
-    constructor(productService: ProductService, redisProductService: RedisProductService);
+    constructor(redisProductService: RedisProductService);
     getProductById(id: string): Promise<void>;
 }
