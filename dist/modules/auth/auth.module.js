@@ -13,27 +13,17 @@ const sign_in_service_1 = require("./sign-in/sign-in.service");
 const sign_up_service_1 = require("./sign-up/sign-up.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../models/entities/user.entity");
-const jwt_1 = require("@nestjs/jwt");
-const config_1 = require("@nestjs/config");
 const mail_service_1 = require("../mail/mail.service");
 const users_service_1 = require("../users/users.service");
 const brcypt_service_1 = require("../bcrypt/brcypt.service");
+const token_service_1 = require("../token/token.service");
+const token_module_1 = require("../token/token.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]),
-            jwt_1.JwtModule.registerAsync({
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: async (configService) => ({
-                    secret: configService.get('JWT_SECRET'),
-                    signOptions: { expiresIn: '1h' },
-                }),
-            }),
-        ],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]), token_module_1.TokenModule],
         controllers: [auth_controller_1.AuthController],
         providers: [
             sign_in_service_1.SignInService,
@@ -41,6 +31,7 @@ exports.AuthModule = AuthModule = __decorate([
             mail_service_1.EmailService,
             users_service_1.UsersService,
             brcypt_service_1.BcryptService,
+            token_service_1.TokenService,
         ],
     })
 ], AuthModule);

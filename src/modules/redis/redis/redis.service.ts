@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { RedisClientType } from '@redis/client';
 import { createClient } from 'redis';
+import { CONFIG } from 'src/config/config';
 
 @Injectable()
 export class RedisService {
   private client: RedisClientType;
 
-  private REDIS_URL = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-  private REDIS_TTL = parseInt(process.env.REDIS_TTL) || 300;
+  private REDIS_URL = CONFIG.redis.url;
+  private REDIS_TTL = parseInt(CONFIG.redis.ttl) || 300;
 
   constructor() {
     this.client = createClient({ url: this.REDIS_URL });

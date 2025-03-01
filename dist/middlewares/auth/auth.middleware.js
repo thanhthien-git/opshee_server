@@ -19,18 +19,16 @@ let AuthMiddleware = class AuthMiddleware {
     use(req, res, next) {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            throw new common_1.UnauthorizedException('Token not valid');
+            throw new common_1.UnauthorizedException('Token not provided');
         }
         const token = authHeader.split(' ')[1];
         try {
-            const payload = this.jwtService.verify(token, {
-                secret: process.env.JWT_SECRET,
-            });
+            const payload = this.jwtService.verify(token);
             req.user = payload;
             next();
         }
         catch (err) {
-            throw new common_1.UnauthorizedException('Token not valid');
+            throw new common_1.UnauthorizedException({ message: 'Invalid token' });
         }
     }
 };

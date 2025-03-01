@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateInfoDto } from './dto/update-info.dto';
-import { EmailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -28,11 +27,18 @@ export class UsersService {
 
   async updateInfo(data: UpdateInfoDto) {
     try {
-      const { userId, user_first_name, user_last_name, date_of_birth } = data;
+      const {
+        userId,
+        user_first_name,
+        user_last_name,
+        date_of_birth,
+        user_address,
+      } = data;
       await this.userRepository.update(Number(userId), {
         user_first_name: user_first_name,
         user_last_name: user_last_name,
         date_of_birth: date_of_birth,
+        user_address: user_address,
       });
       return {
         message: SUCCESS_MESSAGE.UPDATE_SUCCESS,

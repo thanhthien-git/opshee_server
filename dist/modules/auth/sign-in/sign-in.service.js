@@ -18,20 +18,12 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../../models/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
-const jwt_1 = require("@nestjs/jwt");
-const mail_service_1 = require("../../mail/mail.service");
-const users_service_1 = require("../../users/users.service");
 const brcypt_service_1 = require("../../bcrypt/brcypt.service");
+const token_service_1 = require("../../token/token.service");
 let SignInService = class SignInService {
-    constructor(userRepository, jwtService, emailService, userService) {
+    constructor(userRepository, tokenService) {
         this.userRepository = userRepository;
-        this.jwtService = jwtService;
-        this.emailService = emailService;
-        this.userService = userService;
-        this.TOKEN_EXPIRE_TIME = 60;
-    }
-    async generateToken(payload) {
-        return this.jwtService.sign(payload);
+        this.tokenService = tokenService;
     }
     async login(loginDto) {
         const isEmail = /\S+@\S+\.\S+/.test(loginDto.username);
@@ -51,7 +43,7 @@ let SignInService = class SignInService {
             userEmail: user.user_email,
             role: user.role,
         };
-        return await this.generateToken(payload);
+        return this.tokenService.generateToken(payload);
     }
 };
 exports.SignInService = SignInService;
@@ -59,7 +51,5 @@ exports.SignInService = SignInService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        jwt_1.JwtService,
-        mail_service_1.EmailService,
-        users_service_1.UsersService])
+        token_service_1.TokenService])
 ], SignInService);

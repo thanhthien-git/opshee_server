@@ -16,13 +16,16 @@ exports.ProductRepository = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const products_scheme_1 = require("../../models/schemes/products.scheme");
+const products_scheme_1 = require("./schemes/products.scheme");
 let ProductRepository = class ProductRepository {
     constructor(productModel) {
         this.productModel = productModel;
     }
     async getProductById(id) {
         return await this.productModel.findById(id);
+    }
+    async create(data, shopId) {
+        console.log(data);
     }
 };
 exports.ProductRepository = ProductRepository;

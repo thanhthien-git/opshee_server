@@ -12,10 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedisService = void 0;
 const common_1 = require("@nestjs/common");
 const redis_1 = require("redis");
+const config_1 = require("../../../config/config");
 let RedisService = class RedisService {
     constructor() {
-        this.REDIS_URL = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-        this.REDIS_TTL = parseInt(process.env.REDIS_TTL) || 300;
+        this.REDIS_URL = config_1.CONFIG.redis.url;
+        this.REDIS_TTL = parseInt(config_1.CONFIG.redis.ttl) || 300;
         this.client = (0, redis_1.createClient)({ url: this.REDIS_URL });
         this.client.connect();
         this.client.on('ready', () => {

@@ -11,6 +11,9 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("../../config/config");
+const shop_entity_1 = require("../../models/entities/shop.entity");
+const user_entity_1 = require("../../models/entities/user.entity");
+const ENTITIES = [user_entity_1.UserEntity, shop_entity_1.ShopEntity];
 let DatabaseModule = class DatabaseModule {
 };
 exports.DatabaseModule = DatabaseModule;
@@ -18,14 +21,15 @@ exports.DatabaseModule = DatabaseModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
         imports: [
+            config_1.CONFIG_DATABASE.load_env,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
-                url: process.env.POSTGRES_URL,
-                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                url: config_1.CONFIG.database.postgres,
+                entities: [...ENTITIES],
+                autoLoadEntities: true,
                 ssl: { rejectUnauthorized: false },
             }),
-            config_1.CONFIG_DATABASE.load_env,
-            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URL),
+            mongoose_1.MongooseModule.forRoot(config_1.CONFIG.database.mongo),
         ],
     })
 ], DatabaseModule);

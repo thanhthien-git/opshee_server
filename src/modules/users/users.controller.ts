@@ -15,7 +15,7 @@ import { ERROR_MESSAGE } from 'src/constants/message';
 import { passwordRegex } from 'src/constants/regex';
 import { UpdateInfoDto } from './dto/update-info.dto';
 
-@Controller('/users')
+@Controller('user')
 @UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly userService: UsersService) {}

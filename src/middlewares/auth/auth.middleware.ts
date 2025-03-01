@@ -12,18 +12,16 @@ export class AuthMiddleware implements NestMiddleware {
   use(req: any, res: any, next: (error?: Error | any) => void) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      throw new UnauthorizedException('Token not valid');
+      throw new UnauthorizedException('Token not provided');
     }
 
-    const token = authHeader.split(' ')[1];
+    const token: string = authHeader.split(' ')[1];
     try {
-      const payload = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
-      });
+      const payload = this.jwtService.verify(token);
       req.user = payload;
       next();
     } catch (err) {
-      throw new UnauthorizedException('Token not valid');
+      throw new UnauthorizedException({ message: 'Invalid token' });
     }
   }
 }

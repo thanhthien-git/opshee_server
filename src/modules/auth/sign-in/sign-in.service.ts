@@ -5,26 +5,17 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { ERROR_MESSAGE } from '../../../constants/message';
 import { LoginDto } from '../dto/sign-in/login.dto';
-import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/interface/jwt-payload';
-import { EmailService } from 'src/modules/mail/mail.service';
-import { UsersService } from 'src/modules/users/users.service';
 import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
+import { TokenService } from 'src/modules/token/token.service';
 
 @Injectable()
 export class SignInService {
-  private TOKEN_EXPIRE_TIME = 60;
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private jwtService: JwtService,
-    private emailService: EmailService,
-    private userService: UsersService,
+    private tokenService: TokenService,
   ) {}
-
-  async generateToken(payload: JwtPayload) {
-    return this.jwtService.sign(payload);
-  }
 
   async login(loginDto: LoginDto): Promise<string> {
     const isEmail = /\S+@\S+\.\S+/.test(loginDto.username);
@@ -54,6 +45,6 @@ export class SignInService {
       role: user.role,
     };
 
-    return await this.generateToken(payload);
+    return this.tokenService.generateToken(payload);
   }
 }

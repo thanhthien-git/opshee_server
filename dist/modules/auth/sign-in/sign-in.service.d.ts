@@ -1,17 +1,10 @@
 import { UserEntity } from '../../../models/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/sign-in/login.dto';
-import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/interface/jwt-payload';
-import { EmailService } from 'src/modules/mail/mail.service';
-import { UsersService } from 'src/modules/users/users.service';
+import { TokenService } from 'src/modules/token/token.service';
 export declare class SignInService {
     private userRepository;
-    private jwtService;
-    private emailService;
-    private userService;
-    private TOKEN_EXPIRE_TIME;
-    constructor(userRepository: Repository<UserEntity>, jwtService: JwtService, emailService: EmailService, userService: UsersService);
-    generateToken(payload: JwtPayload): Promise<string>;
+    private tokenService;
+    constructor(userRepository: Repository<UserEntity>, tokenService: TokenService);
     login(loginDto: LoginDto): Promise<string>;
 }

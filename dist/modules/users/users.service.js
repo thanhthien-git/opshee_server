@@ -29,11 +29,12 @@ let UsersService = class UsersService {
     }
     async updateInfo(data) {
         try {
-            const { userId, user_first_name, user_last_name, date_of_birth } = data;
+            const { userId, user_first_name, user_last_name, date_of_birth, user_address, } = data;
             await this.userRepository.update(Number(userId), {
                 user_first_name: user_first_name,
                 user_last_name: user_last_name,
                 date_of_birth: date_of_birth,
+                user_address: user_address,
             });
             return {
                 message: message_1.SUCCESS_MESSAGE.UPDATE_SUCCESS,

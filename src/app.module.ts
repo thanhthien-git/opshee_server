@@ -1,19 +1,20 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { CONFIG_DATABASE } from './config/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthMiddleware } from './middlewares/auth/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './modules/products/product.module';
 import { RedisModule } from './modules/redis/redis/redis.module';
 import { DatabaseModule } from './modules/database/database.module';
-import { TokenModule } from './modules/jwt/jwt.module';
+import { ShopModule } from './modules/shops/shop/shop.module';
+import { ConfigModule } from '@nestjs/config';
+import { ShopMiddleware } from './middlewares/auth/shop.middleware';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { TokenModule } from './modules/token/token.module';
 
+const PROTECTED_ROUTES = ['user'];
 @Module({
   imports: [
     //import app modules
@@ -21,23 +22,20 @@ import { TokenModule } from './modules/jwt/jwt.module';
     UsersModule,
     ProductModule,
     RedisModule,
-    //render landing page
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      exclude: ['/api*'],
-      serveStaticOptions: {
-        cacheControl: true,
-        maxAge: 43200000,
-        immutable: true,
-      },
+    CloudinaryModule,
+    TokenModule,
+    ShopModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
     }),
     DatabaseModule,
-    //register for jwt service
-    TokenModule,
+    JwtModule,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('users');
+    consumer.apply(AuthMiddleware).forRoutes(...PROTECTED_ROUTES);
+    consumer.apply(ShopMiddleware).forRoutes('product');
   }
 }

@@ -13,26 +13,25 @@ export class AuthController {
     private readonly signUpService: SignUpService,
   ) {}
   //#region : Login Controller
-  @Post('/login')
-  @UsePipes()
+  @Post('login')
   async signIn(@Body() loginDto: LoginDto) {
     return this.signInService.login(loginDto);
   }
   //#endregion
 
   //#region : Sign Up Controller
-  @Post('/verify-phone')
+  @Post('verify-phone')
   async verifyPhone(@Body() validateData: ValidateDto) {
     return this.signUpService.checkIsExist(validateData);
   }
-  @Post('/sign-up')
+  @Post('sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.signUpService.signUp(signUpDto);
   }
   //#endregion
 
   //#region : Forgot password - Reset password
-  @Post('/forgot-password')
+  @Post('forgot-password')
   async requestForgotPassword(@Body() data: ForgotPasswordDto) {
     return data
   }

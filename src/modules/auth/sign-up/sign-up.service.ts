@@ -4,7 +4,6 @@ import { UserEntity } from '../../../models/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../dto/sign-up/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from '../../../constants/message';
-import * as bcrypt from 'bcrypt';
 import { ValidateDto } from '../dto/sign-up/validate.dto';
 import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
 
