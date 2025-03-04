@@ -13,7 +13,10 @@ const streamifier = require('streamifier');
 let CloudinaryService = class CloudinaryService {
     uploadFile(file) {
         return new Promise((resolve, reject) => {
-            const uploadStream = cloudinary_1.v2.uploader.upload_stream((error, result) => {
+            const uploadStream = cloudinary_1.v2.uploader.upload_stream({
+                resource_type: 'auto',
+                transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+            }, (error, result) => {
                 if (error)
                     return reject(error);
                 resolve(result.url);

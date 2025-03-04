@@ -4,6 +4,7 @@ import { ProductAtribute, ProductVariation } from '../types/product.type';
 
 @Schema({ collection: 'products' }) // Chỉ định tên collection là 'products'
 export class Product {
+
   @Prop({ required: true })
   product_name: string;
 

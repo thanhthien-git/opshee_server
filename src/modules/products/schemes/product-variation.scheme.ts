@@ -1,15 +1,22 @@
-import { ObjectId } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
-export class ProductModelScheme {
-  _id: ObjectId;
-  productId: ObjectId;
-  modelList: ModelItem[];
+@Schema({ collection: 'productmodels' })
+export class ProductModel {
+  @Prop({ type: Types.ObjectId })
+  product_id: Types.ObjectId;
+
+  @Prop({ type: Array })
+  model_list: ModelItem[];
 }
 
-type ModelItem = {
-  tierIndex: [number, number];
+export type ModelItem = {
+  tier_index: number[];
   isDefault: boolean;
   price: number;
   stock: number;
-  image: string;
+  // image: string;
 };
+
+export type ProductModelDocument = HydratedDocument<ProductModel>;
+export const ProductModelSchema = SchemaFactory.createForClass(ProductModel);

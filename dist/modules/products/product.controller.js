@@ -20,18 +20,34 @@ const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const role_guard_1 = require("../../guards/role/role.guard");
 const role_enum_1 = require("../../enum/role.enum");
 const role_decorators_1 = require("../../decorators/role.decorators");
-const create_product_dto_1 = require("./dto/create-product.dto");
+const product_repository_1 = require("./product.repository");
 let ProductController = class ProductController {
-    constructor(redisProductService, storageService) {
+    constructor(redisProductService, productRepository, storageService) {
         this.redisProductService = redisProductService;
+        this.productRepository = productRepository;
         this.storageService = storageService;
     }
     async getProductById(id) {
         return await this.redisProductService.getProductById(id);
     }
-    async create(data, req) {
+    async create(files, data, req) {
+        let parsedData = JSON.parse(data);
+        const requestData = {
+            productImages: files,
+            ...parsedData,
+        };
         const userId = req.user.userId;
-        return await this.redisProductService.create(data, userId);
+        return await this.productRepository.create(requestData, userId);
+    }
+    async update(files, data) {
+        let parsedData = JSON.parse(data);
+        let requestData = {
+            modelList: parsedData.variation,
+            productId: parsedData.productId,
+            productImage: files,
+            ...parsedData,
+        };
+        return await this.productRepository.updateProduct(requestData);
     }
 };
 exports.ProductController = ProductController;
@@ -47,14 +63,27 @@ __decorate([
     (0, role_decorators_1.Roles)(role_enum_1.ROLE.SHOP),
     (0, common_1.Post)('create'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files')),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)('data')),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto, Object]),
+    __metadata("design:paramtypes", [Array, String, Object]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(role_guard_1.RolesGuard),
+    (0, role_decorators_1.Roles)(role_enum_1.ROLE.SHOP),
+    (0, common_1.Patch)('update'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files')),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)('data')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array, String]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "update", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
     __metadata("design:paramtypes", [product_service_1.RedisProductService,
+        product_repository_1.ProductRepository,
         cloudinary_service_1.CloudinaryService])
 ], ProductController);

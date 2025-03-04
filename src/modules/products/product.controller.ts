@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Query,
   Req,
@@ -15,12 +16,18 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { RolesGuard } from 'src/guards/role/role.guard';
 import { ROLE } from 'src/enum/role.enum';
 import { Roles } from 'src/decorators/role.decorators';
-import { CreateProductDto } from './dto/create-product.dto';
+import {
+  CreateProductDto,
+  ProductAttributeDto,
+} from './dto/create-product.dto';
+import { ProductRepository } from './product.repository';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {
   constructor(
     private readonly redisProductService: RedisProductService,
+    private readonly productRepository: ProductRepository,
     private readonly storageService: CloudinaryService,
   ) {}
 
@@ -33,8 +40,39 @@ export class ProductController {
   @Roles(ROLE.SHOP)
   @Post('create')
   @UseInterceptors(FilesInterceptor('files'))
-  async create(@Body() data: CreateProductDto, @Req() req) {
+  async create(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('data') data: string,
+    @Req() req,
+  ) {
+    let parsedData: ProductAttributeDto = JSON.parse(data);
+
+    const requestData: CreateProductDto = {
+      productImages: files,
+      ...parsedData,
+    };
+
     const userId = req.user.userId;
-    return await this.redisProductService.create(data, userId);
+    return await this.productRepository.create(requestData, userId);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(ROLE.SHOP)
+  @Patch('update')
+  @UseInterceptors(FilesInterceptor('files'))
+  async update(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('data') data: string,
+  ) {
+    let parsedData: ProductAttributeDto = JSON.parse(data);
+
+    let requestData: UpdateProductDto = {
+      modelList: parsedData.variation,
+      productId: parsedData.productId,
+      productImage: files,
+      ...parsedData,
+    };
+
+    return await this.productRepository.updateProduct(requestData);
   }
 }

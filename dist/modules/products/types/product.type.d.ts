@@ -6,5 +6,5 @@ export type ProductVariation = {
     customValue: string;
     valueList: {
         customValue: string;
-    };
+    }[];
 };

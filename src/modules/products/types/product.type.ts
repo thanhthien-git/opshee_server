@@ -5,5 +5,5 @@ export type ProductAtribute = {
 
 export type ProductVariation = {
   customValue: string;
-  valueList: { customValue: string };
+  valueList: { customValue: string }[];
 };

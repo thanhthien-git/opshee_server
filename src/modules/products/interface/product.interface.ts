@@ -1,5 +1,5 @@
 import { IBase } from 'src/interface/base.interface';
-import { ProductAtribute, VariationList } from '../types/product.type';
+import { ProductAtribute, ProductVariation } from '../types/product.type';
 
 export interface IProduct extends IBase {
   productName: string;
@@ -7,7 +7,7 @@ export interface IProduct extends IBase {
   productBrandId: number;
   productAttributes: ProductAtribute[];
   productImages: string[];
-  producVariationList: VariationList;
+  producVariationList: ProductVariation;
   productCreateAt?: Date;
   productUpdateAt?: Date;
   shopId: number;
