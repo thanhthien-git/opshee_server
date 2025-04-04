@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
-    logger: ['log', 'error', 'warn', 'debug', 'verbose'], // Bật tất cả các mức log
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'], 
   });
   const port = process.env.PORT || 3000;
   app.setGlobalPrefix('api/v1');

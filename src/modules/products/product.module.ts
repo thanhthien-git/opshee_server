@@ -19,7 +19,6 @@ import {
   imports: [
     MongooseModule.forFeature([
       { name: Product.name, schema: ProductSchema },
-      ,
       { name: ProductModel.name, schema: ProductModelSchema },
     ]),
     RedisModule,

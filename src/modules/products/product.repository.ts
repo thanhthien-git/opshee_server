@@ -2,9 +2,10 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import {
   Product,
   ProductDocument,
@@ -12,11 +13,14 @@ import {
 import { CreateProductDto } from './dto/create-product.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import {
+  ModelItem,
   ProductModel,
   ProductModelDocument,
 } from './schemes/product-variation.scheme';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { url } from 'inspector';
+import { FitlerDto } from './dto/filter-product.dto';
+import { PaginatedResponse } from 'src/interface/paginated-response';
 
 @Injectable()
 export class ProductRepository {
@@ -26,8 +30,19 @@ export class ProductRepository {
     private productItem: Model<ProductModelDocument>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
+
   async getProductById(id: string): Promise<void> {
     return await this.productModel.findById(id);
+  }
+
+  private getProductPriceRange(variations: ModelItem[]) {
+    if (!variations.length) return null;
+
+    const prices = variations.map((v) => v.price);
+    return {
+      lowest: Math.min(...prices),
+      highest: Math.max(...prices),
+    };
   }
 
   async create(createProductDto: CreateProductDto, shopId: string) {
@@ -42,7 +57,18 @@ export class ProductRepository {
     } = createProductDto;
 
     try {
-      //STEP 1: create product first
+      const productId = new mongoose.Types.ObjectId();
+      //STEP 1: CREATE VARIATION
+      const productModelData = {
+        product_id: productId,
+        model_list: variation,
+      };
+
+      //---define product data include its id---
+      const productItemRequest =
+        await this.productItem.create(productModelData);
+
+      //STEP 2: create product first
       //---upload image--- : upload to storage -> assign to productImage using a string[]
       let imageUrls: Array<string> = [];
       if (productImages.length === 1) {
@@ -53,7 +79,9 @@ export class ProductRepository {
         imageUrls = await this.cloudinaryService.uploadFiles(productImages);
       } // WORK
       if (variation.length !== 0) {
+        const { highest, lowest } = this.getProductPriceRange(variation);
         const product = await this.productModel.create({
+          _id: productId,
           product_name: productName,
           product_category: productCategory,
           product_brand_id: productBrandId,
@@ -63,18 +91,11 @@ export class ProductRepository {
           product_created_at: new Date(),
           product_updated_at: new Date(),
           product_condition: true,
+          product_highest_price: highest,
+          product_lowest_price: lowest,
           shop_id: shopId,
         }); // WORK
 
-        //STEP 2: CREATE VARIATION
-        const productModelData = {
-          product_id: product._id,
-          model_list: variation,
-        };
-
-        //---define product data include its id---
-        const productItemRequest =
-          await this.productItem.create(productModelData);
         //STEP 3: return the respone
         return {
           product: product,
@@ -92,7 +113,7 @@ export class ProductRepository {
     }
   }
 
-  async updateProduct(updateDto: UpdateProductDto) {
+  async update(updateDto: UpdateProductDto) {
     const {
       productId,
       modelList,
@@ -105,21 +126,17 @@ export class ProductRepository {
     } = updateDto;
 
     let product = await this.productModel.findById(productId);
-    let imageUrls: string[] = [];
-    if (productImage) {
-      imageUrls = await this.cloudinaryService.uploadFiles(productImage);
-      imageUrls = [...imageUrls, ...product.product_images];
-    }
 
-    Object.assign(product, {
-      product_attributes: productAttributes,
-      product_brand_id: productBrandId,
-      product_category: productCategory,
-      product_name: productName,
-      product_updated_at: new Date(),
-      product_created_at: new Date(),
-      product_variation_list: productVariationList,
-    });
+    if (Array.isArray(productImage))
+      Object.assign(product, {
+        product_attributes: productAttributes,
+        product_brand_id: productBrandId,
+        product_category: productCategory,
+        product_name: productName,
+        product_updated_at: new Date(),
+        product_created_at: new Date(),
+        product_variation_list: productVariationList,
+      });
     const updateOperations = [product.save()];
 
     if (Array.isArray(modelList) && modelList.length > 0) {
@@ -136,5 +153,107 @@ export class ProductRepository {
       await Promise.all(updateOperations);
 
     return { updatedProduct, updatedProductItem };
+  }
+
+  async delete(
+    productId: string,
+    shopId: string,
+  ): Promise<{ variationsRemoved: boolean; productDeleted: number }> {
+    try {
+      const result: { isAuthorized?: boolean }[] =
+        await this.productModel.aggregate([
+          {
+            $match: {
+              _id: new Types.ObjectId(productId),
+            },
+          },
+          {
+            $project: {
+              isAuthorized: {
+                $eq: ['$shop_id', shopId],
+              },
+            },
+          },
+        ]);
+
+      if (!result[0]?.isAuthorized) {
+        throw new UnauthorizedException({ message: 'Bạn không có quyền này' });
+      }
+
+      const [variationsResult, deleteResult] = await Promise.all([
+        this.removeVariations(productId),
+        this.productModel.deleteOne({ _id: productId }),
+      ]);
+
+      return {
+        variationsRemoved: variationsResult !== null, // adjust based on removeVariations return type
+        productDeleted: deleteResult.deletedCount,
+      };
+    } catch (err) {
+      console.error('Delete product error:', err);
+      throw new BadRequestException({ message: 'Delete product fail' });
+    }
+  }
+
+  async removeVariations(productId: string): Promise<Document> {
+    return await this.productItem.findOneAndDelete({
+      product_id: productId,
+    });
+  }
+
+  async search(filter: FitlerDto): Promise<PaginatedResponse<Product>> {
+    const {
+      productBrand,
+      productName,
+      productHighestPrice,
+      productLowestPrice,
+      page = 1,
+      pageSize = 10,
+    } = filter;
+
+    const option = [];
+
+    //add aggregation
+    if (productName) {
+      option.push({
+        product_name: { $regex: productName, $options: 'i' },
+      });
+    }
+    if (productBrand) {
+      option.push({
+        product_brand_id: {
+          $match: productBrand,
+        },
+      });
+    }
+    if (productLowestPrice && productHighestPrice) {
+      option.push({
+        product_lowest_price: {
+          $gte: productLowestPrice,
+          $lte: productHighestPrice,
+        },
+        productHighestPrice: {
+          $lte: productHighestPrice,
+        },
+      });
+    }
+
+    //pagination pipeline
+    option.push({ $skip: (page - 1) * pageSize }, { $limit: pageSize });
+    const totalPromise = this.productModel.countDocuments();
+    const dataPromise = this.productModel.aggregate(option);
+    const [total, products] = await Promise.all([totalPromise, dataPromise]);
+
+    return {
+      data: products,
+      pagination: {
+        page,
+        pageSize,
+        totalItems: total,
+        totalPages: Math.ceil(total / pageSize),
+        hasNextPage: page * pageSize < total,
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 }

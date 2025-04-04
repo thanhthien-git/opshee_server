@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -34,6 +35,11 @@ export class ProductController {
   @Get()
   async getProductById(@Query('id') id: string) {
     return await this.redisProductService.getProductById(id);
+  }
+
+  @Get()
+  async getDailyDiscover(@Req() req) {
+    return await req;
   }
 
   @UseGuards(RolesGuard)
@@ -73,6 +79,14 @@ export class ProductController {
       ...parsedData,
     };
 
-    return await this.productRepository.updateProduct(requestData);
+    return await this.productRepository.update(requestData);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(ROLE.SHOP)
+  @Delete('delete')
+  async delete(@Body('productId') productId: string, @Req() req) {
+    const shopId = req.user.userId;
+    return await this.productRepository.delete(productId, shopId);
   }
 }

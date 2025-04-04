@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Product, ProductDocument } from 'src/modules/products/schemes/products.scheme';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -11,51 +11,53 @@ export declare class ProductRepository {
     constructor(productModel: Model<ProductDocument>, productItem: Model<ProductModelDocument>, cloudinaryService: CloudinaryService);
     getProductById(id: string): Promise<void>;
     create(createProductDto: CreateProductDto, shopId: string): Promise<{
-        product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+        product: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
         } & {
             __v: number;
-        }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+        }> & mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
         } & {
             __v: number;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: mongoose.Types.ObjectId;
         }>;
-        variation: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, ProductModel> & ProductModel & {
-            _id: import("mongoose").Types.ObjectId;
+        variation: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, ProductModel> & ProductModel & {
+            _id: mongoose.Types.ObjectId;
         } & {
             __v: number;
-        }> & import("mongoose").Document<unknown, {}, ProductModel> & ProductModel & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            __v: number;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>;
-    }>;
-    updateProduct(updateDto: UpdateProductDto): Promise<{
-        updatedProduct: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            __v: number;
-        }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
+        }> & mongoose.Document<unknown, {}, ProductModel> & ProductModel & {
+            _id: mongoose.Types.ObjectId;
         } & {
             __v: number;
         } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>;
-        updatedProductItem: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            __v: number;
-        }> & import("mongoose").Document<unknown, {}, Product> & Product & {
-            _id: import("mongoose").Types.ObjectId;
-        } & {
-            __v: number;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
+            _id: mongoose.Types.ObjectId;
         }>;
     }>;
+    update(updateDto: UpdateProductDto): Promise<{
+        updatedProduct: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }> & mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        } & Required<{
+            _id: mongoose.Types.ObjectId;
+        }>;
+        updatedProductItem: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        }> & mongoose.Document<unknown, {}, Product> & Product & {
+            _id: mongoose.Types.ObjectId;
+        } & {
+            __v: number;
+        } & Required<{
+            _id: mongoose.Types.ObjectId;
+        }>;
+    }>;
+    delete(productId: string, shopId: string): Promise<[Document, mongoose.mongo.DeleteResult]>;
+    removeVariations(productId: string): Promise<Document>;
 }

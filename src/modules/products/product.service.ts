@@ -19,4 +19,5 @@ export class RedisProductService {
       return this.productRepository.getProductById(id);
     });
   }
+
 }

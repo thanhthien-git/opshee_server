@@ -1,10 +1,13 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { ProductAtribute, ProductVariation } from '../types/product.type';
+import { ObjectId } from 'mongodb';
 
 @Schema({ collection: 'products' }) // Chỉ định tên collection là 'products'
 export class Product {
-
+  @Prop({ required: false })
+  _id: ObjectId;
+  
   @Prop({ required: true })
   product_name: string;
 
@@ -35,6 +38,12 @@ export class Product {
 
   @Prop({ required: true })
   product_created_at: Date;
+
+  @Prop({ required: true })
+  product_lowest_price: number;
+
+  @Prop({ required: true })
+  product_highest_price: number;
 
   @Prop({ required: true })
   shop_id: number;

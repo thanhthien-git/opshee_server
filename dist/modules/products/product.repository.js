@@ -73,29 +73,59 @@ let ProductRepository = class ProductRepository {
             });
         }
     }
-    async updateProduct(updateDto) {
+    async update(updateDto) {
         const { productId, modelList, productImage, productAttributes, productBrandId, productCategory, productVariationList, productName, } = updateDto;
         let product = await this.productModel.findById(productId);
-        let imageUrls = [];
-        if (productImage) {
-            imageUrls = await this.cloudinaryService.uploadFiles(productImage);
-            imageUrls = [...imageUrls, ...product.product_images];
-        }
-        Object.assign(product, {
-            product_attributes: productAttributes,
-            product_brand_id: productBrandId,
-            product_category: productCategory,
-            product_name: productName,
-            product_updated_at: new Date(),
-            product_created_at: new Date(),
-            product_variation_list: productVariationList,
-        });
+        if (Array.isArray(productImage))
+            Object.assign(product, {
+                product_attributes: productAttributes,
+                product_brand_id: productBrandId,
+                product_category: productCategory,
+                product_name: productName,
+                product_updated_at: new Date(),
+                product_created_at: new Date(),
+                product_variation_list: productVariationList,
+            });
         const updateOperations = [product.save()];
         if (Array.isArray(modelList) && modelList.length > 0) {
             updateOperations.push(this.productItem.findOneAndUpdate({ product_id: productId }, { $set: { model_list: modelList } }, { new: true, upsert: true }));
         }
         const [updatedProduct, updatedProductItem] = await Promise.all(updateOperations);
         return { updatedProduct, updatedProductItem };
+    }
+    async delete(productId, shopId) {
+        try {
+            const result = await this.productModel.aggregate([
+                {
+                    $match: {
+                        _id: new mongoose_2.default.Types.ObjectId(productId),
+                    },
+                },
+                {
+                    $project: {
+                        isAuthorized: {
+                            $eq: ['$shop_id', shopId],
+                        },
+                    },
+                },
+            ]);
+            if (!result[0].isAuthorized) {
+                throw new common_1.UnauthorizedException({ message: 'Bạn không có quyền này' });
+            }
+            return Promise.all([
+                await this.removeVariations(productId),
+                await this.productModel.deleteOne({ _id: productId }),
+            ]);
+        }
+        catch (err) {
+            console.log(err);
+            throw new common_1.BadRequestException({ message: 'Delete product fail' });
+        }
+    }
+    async removeVariations(productId) {
+        return await this.productItem.findOneAndDelete({
+            product_id: productId,
+        });
     }
 };
 exports.ProductRepository = ProductRepository;

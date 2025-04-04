@@ -1,12 +1,13 @@
 import { RedisProductService } from './product.service';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { ProductRepository } from './product.repository';
+import { FitlerDto } from './dto/filter-product.dto';
 export declare class ProductController {
     private readonly redisProductService;
     private readonly productRepository;
-    private readonly storageService;
-    constructor(redisProductService: RedisProductService, productRepository: ProductRepository, storageService: CloudinaryService);
+    constructor(redisProductService: RedisProductService, productRepository: ProductRepository);
     getProductById(id: string): Promise<void>;
+    getDailyDiscover(req: any): Promise<any>;
+    search(dto: FitlerDto): Promise<FitlerDto>;
     create(files: Express.Multer.File[], data: string, req: any): Promise<{
         product: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & {
             _id: import("mongoose").Types.ObjectId;
@@ -55,4 +56,5 @@ export declare class ProductController {
             _id: import("mongoose").Types.ObjectId;
         }>;
     }>;
+    delete(productId: string, req: any): Promise<[Document, import("mongodb").DeleteResult]>;
 }

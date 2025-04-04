@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
@@ -36,6 +41,12 @@ const PROTECTED_ROUTES = ['user'];
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(...PROTECTED_ROUTES);
-    consumer.apply(ShopMiddleware).forRoutes('product');
+    consumer
+      .apply(ShopMiddleware)
+      .exclude(
+        { path: 'product/search', method: RequestMethod.GET },
+        { path: 'product/:id', method: RequestMethod.GET },
+      )
+      .forRoutes('product');
   }
 }

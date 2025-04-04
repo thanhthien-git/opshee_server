@@ -24,7 +24,10 @@ const PROTECTED_ROUTES = ['user'];
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(auth_middleware_1.AuthMiddleware).forRoutes(...PROTECTED_ROUTES);
-        consumer.apply(shop_middleware_1.ShopMiddleware).forRoutes('product');
+        consumer
+            .apply(shop_middleware_1.ShopMiddleware)
+            .exclude({ path: 'product/search', method: common_1.RequestMethod.GET }, { path: 'product/:id', method: common_1.RequestMethod.GET })
+            .forRoutes('product');
     }
 };
 exports.AppModule = AppModule;
