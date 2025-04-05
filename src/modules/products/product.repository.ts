@@ -35,16 +35,6 @@ export class ProductRepository {
     return await this.productModel.findById(id);
   }
 
-  private getProductPriceRange(variations: ModelItem[]) {
-    if (!variations.length) return null;
-
-    const prices = variations.map((v) => v.price);
-    return {
-      lowest: Math.min(...prices),
-      highest: Math.max(...prices),
-    };
-  }
-
   async create(createProductDto: CreateProductDto, shopId: string) {
     const {
       productVariationList,
@@ -186,7 +176,7 @@ export class ProductRepository {
       ]);
 
       return {
-        variationsRemoved: variationsResult !== null, // adjust based on removeVariations return type
+        variationsRemoved: variationsResult !== null,
         productDeleted: deleteResult.deletedCount,
       };
     } catch (err) {
@@ -199,6 +189,16 @@ export class ProductRepository {
     return await this.productItem.findOneAndDelete({
       product_id: productId,
     });
+  }
+
+  private getProductPriceRange(variations: ModelItem[]) {
+    if (!variations.length) return null;
+
+    const prices = variations.map((v) => v.price);
+    return {
+      lowest: Math.min(...prices),
+      highest: Math.max(...prices),
+    };
   }
 
   async search(filter: FitlerDto): Promise<PaginatedResponse<Product>> {
