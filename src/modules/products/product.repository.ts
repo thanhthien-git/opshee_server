@@ -31,7 +31,7 @@ export class ProductRepository {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async getProductById(id: string): Promise<void> {
+  async getProductById(id: string) {
     return await this.productModel.findById(id);
   }
 

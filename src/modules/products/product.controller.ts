@@ -23,6 +23,7 @@ import {
 } from './dto/create-product.dto';
 import { ProductRepository } from './product.repository';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductOwnerShipGuard } from './guard/product_owner.guard';
 
 @Controller('product')
 export class ProductController {
@@ -63,6 +64,7 @@ export class ProductController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(ProductOwnerShipGuard)
   @Roles(ROLE.SHOP)
   @Patch('update')
   @UseInterceptors(FilesInterceptor('files'))
@@ -83,6 +85,7 @@ export class ProductController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(ProductOwnerShipGuard)
   @Roles(ROLE.SHOP)
   @Delete('delete')
   async delete(@Body('productId') productId: string, @Req() req) {
