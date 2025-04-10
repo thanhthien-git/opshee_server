@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { RedisProductService } from '../product.service';
 import { ROLE } from 'src/enum/role.enum';
-import { Product } from '../schemes/products.scheme';
 
 export class ProductOwnerShipGuard implements CanActivate {
   constructor(private productService: RedisProductService) {}
@@ -14,6 +13,6 @@ export class ProductOwnerShipGuard implements CanActivate {
     if (role === ROLE.ADMIN) return true;
     const product = await this.productService.getProductById(productId);
 
-    return (product as Product).shop_id === userId;
+    return product === userId;
   }
 }

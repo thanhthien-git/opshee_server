@@ -19,6 +19,7 @@ const mongoose_2 = require("mongoose");
 const products_scheme_1 = require("./schemes/products.scheme");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const product_variation_scheme_1 = require("./schemes/product-variation.scheme");
+const mongodb_1 = require("mongodb");
 let ProductRepository = class ProductRepository {
     constructor(productModel, productItem, cloudinaryService) {
         this.productModel = productModel;
@@ -26,11 +27,18 @@ let ProductRepository = class ProductRepository {
         this.cloudinaryService = cloudinaryService;
     }
     async getProductById(id) {
-        return await this.productModel.findById(id);
+        const objectId = new mongodb_1.ObjectId(id);
+        return await this.productModel.findById(objectId);
     }
     async create(createProductDto, shopId) {
         const { productVariationList, productAttributes, productBrandId, productCategory, productName, variation, productImages, } = createProductDto;
         try {
+            const productId = new mongoose_2.default.Types.ObjectId();
+            const productModelData = {
+                product_id: productId,
+                model_list: variation,
+            };
+            const productItemRequest = await this.productItem.create(productModelData);
             let imageUrls = [];
             if (productImages.length === 1) {
                 imageUrls[0] = await this.cloudinaryService.uploadFile(productImages[0]);
@@ -39,7 +47,9 @@ let ProductRepository = class ProductRepository {
                 imageUrls = await this.cloudinaryService.uploadFiles(productImages);
             }
             if (variation.length !== 0) {
+                const { highest, lowest } = this.getProductPriceRange(variation);
                 const product = await this.productModel.create({
+                    _id: productId,
                     product_name: productName,
                     product_category: productCategory,
                     product_brand_id: productBrandId,
@@ -49,13 +59,10 @@ let ProductRepository = class ProductRepository {
                     product_created_at: new Date(),
                     product_updated_at: new Date(),
                     product_condition: true,
+                    product_highest_price: highest,
+                    product_lowest_price: lowest,
                     shop_id: shopId,
                 });
-                const productModelData = {
-                    product_id: product._id,
-                    model_list: variation,
-                };
-                const productItemRequest = await this.productItem.create(productModelData);
                 return {
                     product: product,
                     variation: productItemRequest,
@@ -98,7 +105,7 @@ let ProductRepository = class ProductRepository {
             const result = await this.productModel.aggregate([
                 {
                     $match: {
-                        _id: new mongoose_2.default.Types.ObjectId(productId),
+                        _id: new mongoose_2.Types.ObjectId(productId),
                     },
                 },
                 {
@@ -109,16 +116,20 @@ let ProductRepository = class ProductRepository {
                     },
                 },
             ]);
-            if (!result[0].isAuthorized) {
+            if (!result[0]?.isAuthorized) {
                 throw new common_1.UnauthorizedException({ message: 'Bạn không có quyền này' });
             }
-            return Promise.all([
-                await this.removeVariations(productId),
-                await this.productModel.deleteOne({ _id: productId }),
+            const [variationsResult, deleteResult] = await Promise.all([
+                this.removeVariations(productId),
+                this.productModel.deleteOne({ _id: productId }),
             ]);
+            return {
+                variationsRemoved: variationsResult !== null,
+                productDeleted: deleteResult.deletedCount,
+            };
         }
         catch (err) {
-            console.log(err);
+            console.error('Delete product error:', err);
             throw new common_1.BadRequestException({ message: 'Delete product fail' });
         }
     }
@@ -126,6 +137,57 @@ let ProductRepository = class ProductRepository {
         return await this.productItem.findOneAndDelete({
             product_id: productId,
         });
+    }
+    getProductPriceRange(variations) {
+        if (!variations.length)
+            return null;
+        const prices = variations.map((v) => v.price);
+        return {
+            lowest: Math.min(...prices),
+            highest: Math.max(...prices),
+        };
+    }
+    async search(filter) {
+        const { productBrand, productName, productHighestPrice, productLowestPrice, page = 1, pageSize = 10, } = filter;
+        const option = [];
+        if (productName) {
+            option.push({
+                product_name: { $regex: productName, $options: 'i' },
+            });
+        }
+        if (productBrand) {
+            option.push({
+                product_brand_id: {
+                    $match: productBrand,
+                },
+            });
+        }
+        if (productLowestPrice && productHighestPrice) {
+            option.push({
+                product_lowest_price: {
+                    $gte: productLowestPrice,
+                    $lte: productHighestPrice,
+                },
+                productHighestPrice: {
+                    $lte: productHighestPrice,
+                },
+            });
+        }
+        option.push({ $skip: (page - 1) * pageSize }, { $limit: pageSize });
+        const totalPromise = this.productModel.countDocuments();
+        const dataPromise = this.productModel.aggregate(option);
+        const [total, products] = await Promise.all([totalPromise, dataPromise]);
+        return {
+            data: products,
+            pagination: {
+                page,
+                pageSize,
+                totalItems: total,
+                totalPages: Math.ceil(total / pageSize),
+                hasNextPage: page * pageSize < total,
+                hasPreviousPage: page > 1,
+            },
+        };
     }
 };
 exports.ProductRepository = ProductRepository;

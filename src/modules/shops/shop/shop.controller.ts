@@ -8,7 +8,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthShopService } from '../auth/shop.auth.service';
 import { ShopRegisterDto } from '../dto/sign-up.dto';
 import { ShopLoginDTO } from '../dto/login.dto';
 import { ShopService } from './shop.service';
@@ -20,22 +19,19 @@ import { OwnerShipGuard } from '../guards/ownership.guard';
 
 @Controller('shop')
 export class ShopController {
-  constructor(
-    private readonly authService: AuthShopService,
-    private readonly shopService: ShopService,
-  ) {}
+  constructor(private readonly shopService: ShopService) {}
 
   @Post('register')
   async register(@Body() data: ShopRegisterDto) {
-    return await this.authService.register(data);
+    return await this.shopService.register(data);
   }
 
   @Post('login')
   async login(@Body() data: ShopLoginDTO) {
-    return await this.authService.login(data);
+    return await this.shopService.login(data);
   }
 
-  @Get('search?queryType=shop')
+  @Get('search')
   async search(@Query() data: ShopFilterDto) {
     return await this.shopService.getShopByName(data.shopName);
   }

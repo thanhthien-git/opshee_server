@@ -8,12 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShopModule = void 0;
 const common_1 = require("@nestjs/common");
-const shop_auth_service_1 = require("../auth/shop.auth.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const shop_entity_1 = require("../../../models/entities/shop.entity");
 const shop_controller_1 = require("./shop.controller");
 const token_module_1 = require("../../token/token.module");
 const token_service_1 = require("../../token/token.service");
+const ownership_guard_1 = require("../guards/ownership.guard");
+const shop_service_1 = require("./shop.service");
 let ShopModule = class ShopModule {
 };
 exports.ShopModule = ShopModule;
@@ -21,6 +22,6 @@ exports.ShopModule = ShopModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([shop_entity_1.ShopEntity]), token_module_1.TokenModule],
         controllers: [shop_controller_1.ShopController],
-        providers: [shop_auth_service_1.AuthShopService, token_service_1.TokenService],
+        providers: [token_service_1.TokenService, ownership_guard_1.OwnerShipGuard, shop_service_1.ShopService],
     })
 ], ShopModule);

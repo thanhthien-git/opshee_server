@@ -14,18 +14,30 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShopController = void 0;
 const common_1 = require("@nestjs/common");
-const shop_auth_service_1 = require("../auth/shop.auth.service");
 const sign_up_dto_1 = require("../dto/sign-up.dto");
 const login_dto_1 = require("../dto/login.dto");
+const shop_service_1 = require("./shop.service");
+const filter_dto_1 = require("../dto/filter.dto");
+const update_dto_1 = require("../dto/update.dto");
+const role_enum_1 = require("../../../enum/role.enum");
+const role_decorators_1 = require("../../../decorators/role.decorators");
+const ownership_guard_1 = require("../guards/ownership.guard");
 let ShopController = class ShopController {
-    constructor(authService) {
-        this.authService = authService;
+    constructor(shopService) {
+        this.shopService = shopService;
     }
     async register(data) {
-        return await this.authService.register(data);
+        return await this.shopService.register(data);
     }
     async login(data) {
-        return await this.authService.login(data);
+        return await this.shopService.login(data);
+    }
+    async search(data) {
+        return await this.shopService.getShopByName(data.shopName);
+    }
+    async update(dto, req) {
+        dto.shopId = req.userId;
+        return await this.shopService.update(dto);
     }
 };
 exports.ShopController = ShopController;
@@ -43,7 +55,24 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.ShopLoginDTO]),
     __metadata("design:returntype", Promise)
 ], ShopController.prototype, "login", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [filter_dto_1.ShopFilterDto]),
+    __metadata("design:returntype", Promise)
+], ShopController.prototype, "search", null);
+__decorate([
+    (0, common_1.UseGuards)(ownership_guard_1.OwnerShipGuard),
+    (0, role_decorators_1.Roles)(role_enum_1.ROLE.SHOP),
+    (0, common_1.Patch)('update'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_dto_1.ShopUpdateDto, Object]),
+    __metadata("design:returntype", Promise)
+], ShopController.prototype, "update", null);
 exports.ShopController = ShopController = __decorate([
     (0, common_1.Controller)('shop'),
-    __metadata("design:paramtypes", [shop_auth_service_1.AuthShopService])
+    __metadata("design:paramtypes", [shop_service_1.ShopService])
 ], ShopController);

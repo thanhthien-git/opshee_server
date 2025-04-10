@@ -9,32 +9,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FitlerDto = void 0;
+exports.ShopUpdateDto = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-class FitlerDto {
-    async validate() {
-        await (0, class_validator_1.validateOrReject)(this);
-    }
+class ShopUpdateDto {
 }
-exports.FitlerDto = FitlerDto;
+exports.ShopUpdateDto = ShopUpdateDto;
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ShopUpdateDto.prototype, "shopName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ShopUpdateDto.prototype, "shopEmail", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], ShopUpdateDto.prototype, "shopPhone", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_transformer_1.Type)(() => Number),
     __metadata("design:type", Number)
-], FitlerDto.prototype, "page", void 0);
-__decorate([
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], FitlerDto.prototype, "pageSize", void 0);
-__decorate([
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], FitlerDto.prototype, "productLowestPrice", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Type)(() => Number),
-    (0, class_validator_1.ValidateIf)((o) => o.productHighestPrice > o.productLowestPrice, {
-        message: 'productHighestPrice must be greater than productLowestPrice',
-    }),
-    __metadata("design:type", Number)
-], FitlerDto.prototype, "productHighestPrice", void 0);
+], ShopUpdateDto.prototype, "shopId", void 0);

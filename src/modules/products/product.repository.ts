@@ -18,9 +18,9 @@ import {
   ProductModelDocument,
 } from './schemes/product-variation.scheme';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { url } from 'inspector';
 import { FitlerDto } from './dto/filter-product.dto';
 import { PaginatedResponse } from 'src/interface/paginated-response';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ProductRepository {
@@ -32,7 +32,8 @@ export class ProductRepository {
   ) {}
 
   async getProductById(id: string) {
-    return await this.productModel.findById(id);
+    const objectId = new ObjectId(id);
+    return await this.productModel.findById(objectId);
   }
 
   async create(createProductDto: CreateProductDto, shopId: string) {

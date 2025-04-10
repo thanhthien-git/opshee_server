@@ -1,11 +1,15 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ROLE } from 'src/constants/role';
 import { ShopEntity } from 'src/models/entities/shop.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class OwnerShipGuard implements CanActivate {
-  constructor(private readonly shopRepository: Repository<ShopEntity>) {}
+  constructor(
+    @InjectRepository(ShopEntity)
+    private readonly shopRepository: Repository<ShopEntity>,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();

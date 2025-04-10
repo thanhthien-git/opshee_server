@@ -22,9 +22,9 @@ export const CONFIG = {
     password: process.env.PASSWORD,
   },
   redis: {
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    //`redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` ||
+    url: process.env.REDIS_URL,
     ttl: process.env.REDIS_TTL,
   },
   jwt: process.env.JWT_SECRET,
 };
-
