@@ -14,7 +14,7 @@ import { ShopService } from './shop.service';
 import { ShopFilterDto } from '../dto/filter.dto';
 import { ShopUpdateDto } from '../dto/update.dto';
 import { ROLE } from 'src/enum/role.enum';
-import { Roles } from 'src/decorators/role.decorators';
+import { Roles } from '../../../decorators/role.decorators';
 import { OwnerShipGuard } from '../guards/ownership.guard';
 
 @Controller('shop')
