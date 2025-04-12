@@ -11,8 +11,8 @@ import {
 import { UsersService } from './users.service';
 import { RolesGuard } from '../../guards/role/role.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { ERROR_MESSAGE } from 'src/constants/message';
-import { passwordRegex } from 'src/constants/regex';
+import { ERROR_MESSAGE } from '../../constants/message';
+import { passwordRegex } from '../../constants/regex';
 import { UpdateInfoDto } from './dto/update-info.dto';
 
 @Controller('user')
