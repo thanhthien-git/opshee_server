@@ -14,7 +14,7 @@ import {
 import { RedisProductService } from './product.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { RolesGuard } from 'src/guards/role/role.guard';
+import { RolesGuard } from '../../guards/role/role.guard';
 import { ROLE } from 'src/enum/role.enum';
 import { Roles } from 'src/decorators/role.decorators';
 import {

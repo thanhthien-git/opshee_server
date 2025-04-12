@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RolesGuard } from 'src/guards/role/role.guard';
+import { RolesGuard } from '../../guards/role/role.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ERROR_MESSAGE } from 'src/constants/message';
 import { passwordRegex } from 'src/constants/regex';
