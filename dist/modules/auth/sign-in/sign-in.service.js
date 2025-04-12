@@ -18,8 +18,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../../../models/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
-const brcypt_service_1 = require("../../bcrypt/brcypt.service");
-const token_service_1 = require("../../token/token.service");
+const brcypt_service_1 = require("../../../modules/bcrypt/brcypt.service");
+const token_service_1 = require("../../../modules/token/token.service");
 let SignInService = class SignInService {
     constructor(userRepository, tokenService) {
         this.userRepository = userRepository;

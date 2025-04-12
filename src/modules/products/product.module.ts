@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   Product,
   ProductSchema,
-} from 'src/modules/products/schemes/products.scheme';
+} from '../../modules/products/schemes/products.scheme';
 import { RedisModule } from '../redis/redis/redis.module';
 import { RedisService } from '../redis/redis/redis.service';
 import { RedisProductService } from './product.service';

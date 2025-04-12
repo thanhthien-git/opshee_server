@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CONFIG, CONFIG_DATABASE } from 'src/config/config';
-import { ShopEntity } from 'src/models/entities/shop.entity';
-import { UserEntity } from 'src/models/entities/user.entity';
+import { CONFIG, CONFIG_DATABASE } from '../../config/config';
+import { ShopEntity } from '../../models/entities/shop.entity';
+import { UserEntity } from '../../models/entities/user.entity';
 
 const ENTITIES = [UserEntity, ShopEntity];
 @Global()

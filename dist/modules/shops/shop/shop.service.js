@@ -17,10 +17,10 @@ const common_1 = require("@nestjs/common");
 const shop_entity_1 = require("../../../models/entities/shop.entity");
 const typeorm_1 = require("typeorm");
 const message_1 = require("../../../constants/message");
-const brcypt_service_1 = require("../../bcrypt/brcypt.service");
+const brcypt_service_1 = require("../../../modules/bcrypt/brcypt.service");
 const role_1 = require("../../../constants/role");
 const typeorm_2 = require("@nestjs/typeorm");
-const token_service_1 = require("../../token/token.service");
+const token_service_1 = require("../../../modules/token/token.service");
 const shop_type_enum_1 = require("../../../enum/shop-type.enum");
 let ShopService = class ShopService {
     constructor(shopRepository, tokenService) {

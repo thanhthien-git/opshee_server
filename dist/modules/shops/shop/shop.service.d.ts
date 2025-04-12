@@ -1,9 +1,9 @@
-import { PaginatedResponse } from 'src/interface/paginated-response';
-import { ShopEntity } from 'src/models/entities/shop.entity';
+import { PaginatedResponse } from '../../../interface/paginated-response';
+import { ShopEntity } from '../../../models/entities/shop.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { ShopUpdateDto } from '../dto/update.dto';
 import { ShopLoginDTO } from '../dto/login.dto';
-import { TokenService } from 'src/modules/token/token.service';
+import { TokenService } from '../../../modules/token/token.service';
 import { ShopRegisterDto } from '../dto/sign-up.dto';
 export declare class ShopService {
     private readonly shopRepository;

@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { JwtPayload } from 'src/interface/jwt-payload';
+import { JwtPayload } from '../../../interface/jwt-payload';
 
 export class UserGuard implements CanActivate {
   canActivate(

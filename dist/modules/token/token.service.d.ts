@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/interface/jwt-payload';
+import { JwtPayload } from '../../interface/jwt-payload';
 export declare class TokenService {
     private readonly jwtService;
     constructor(jwtService: JwtService);

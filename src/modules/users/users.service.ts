@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ERROR_MESSAGE, SUCCESS_MESSAGE } from 'src/constants/message';
-import { UserEntity } from 'src/models/entities/user.entity';
+import { ERROR_MESSAGE, SUCCESS_MESSAGE } from '../../constants/message';
+import { UserEntity } from '../../models/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import * as bcrypt from 'bcrypt';

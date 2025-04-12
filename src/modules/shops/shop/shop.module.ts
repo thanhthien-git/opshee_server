@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ShopEntity } from 'src/models/entities/shop.entity';
+import { ShopEntity } from '../../../models/entities/shop.entity';
 import { ShopController } from './shop.controller';
-import { TokenModule } from 'src/modules/token/token.module';
-import { TokenService } from 'src/modules/token/token.service';
+import { TokenModule } from '../../../modules/token/token.module';
+import { TokenService } from '../../../modules/token/token.service';
 import { OwnerShipGuard } from '../guards/ownership.guard';
 import { ShopService } from './shop.service';
 

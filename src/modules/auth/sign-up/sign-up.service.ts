@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { SignUpDto } from '../dto/sign-up/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from '../../../constants/message';
 import { ValidateDto } from '../dto/sign-up/validate.dto';
-import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
+import { BcryptService } from '../../../modules/bcrypt/brcypt.service';
 
 @Injectable()
 export class SignUpService {

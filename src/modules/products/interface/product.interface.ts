@@ -1,4 +1,4 @@
-import { IBase } from 'src/interface/base.interface';
+import { IBase } from '../../../interface/base.interface';
 import { ProductAtribute, ProductVariation } from '../types/product.type';
 
 export interface IProduct extends IBase {

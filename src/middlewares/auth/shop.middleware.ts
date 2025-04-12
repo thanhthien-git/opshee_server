@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ROLE } from 'src/constants/role';
+import { ROLE } from '../../constants/role';
 
 @Injectable()
 export class ShopMiddleware implements NestMiddleware {

@@ -3,18 +3,18 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
-import { PaginatedResponse } from 'src/interface/paginated-response';
-import { ShopEntity } from 'src/models/entities/shop.entity';
+import { PaginatedResponse } from '../../../interface/paginated-response';
+import { ShopEntity } from '../../../models/entities/shop.entity';
 import { Like, QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { ShopUpdateDto } from '../dto/update.dto';
-import { ERROR_AUTH, ERROR_MESSAGE } from 'src/constants/message';
-import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
-import { JwtPayload } from 'src/interface/jwt-payload';
-import { ROLE } from 'src/constants/role';
+import { ERROR_AUTH, ERROR_MESSAGE } from '../../../constants/message';
+import { BcryptService } from '../../../modules/bcrypt/brcypt.service';
+import { JwtPayload } from '../../../interface/jwt-payload';
+import { ROLE } from '../../../constants/role';
 import { ShopLoginDTO } from '../dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TokenService } from 'src/modules/token/token.service';
-import { SHOP_TYPE } from 'src/enum/shop-type.enum';
+import { TokenService } from '../../../modules/token/token.service';
+import { SHOP_TYPE } from '../../../enum/shop-type.enum';
 import { ShopRegisterDto } from '../dto/sign-up.dto';
 
 @Injectable()

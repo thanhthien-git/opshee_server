@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { RedisProductService } from '../product.service';
-import { ROLE } from 'src/enum/role.enum';
+import { ROLE } from '../../../enum/role.enum';
 
 export class ProductOwnerShipGuard implements CanActivate {
   constructor(private productService: RedisProductService) {}

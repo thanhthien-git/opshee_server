@@ -1,7 +1,7 @@
 import { UserEntity } from '../../../models/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto } from '../dto/sign-in/login.dto';
-import { TokenService } from 'src/modules/token/token.service';
+import { TokenService } from '../../../modules/token/token.service';
 export declare class SignInService {
     private userRepository;
     private tokenService;

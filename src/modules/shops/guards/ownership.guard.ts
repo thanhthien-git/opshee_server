@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ROLE } from 'src/constants/role';
-import { ShopEntity } from 'src/models/entities/shop.entity';
+import { ROLE } from '../../../constants/role';
+import { ShopEntity } from '../../../models/entities/shop.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

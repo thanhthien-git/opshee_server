@@ -5,9 +5,9 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { ERROR_MESSAGE } from '../../../constants/message';
 import { LoginDto } from '../dto/sign-in/login.dto';
-import { JwtPayload } from 'src/interface/jwt-payload';
-import { BcryptService } from 'src/modules/bcrypt/brcypt.service';
-import { TokenService } from 'src/modules/token/token.service';
+import { JwtPayload } from '../../../interface/jwt-payload';
+import { BcryptService } from '../../../modules/bcrypt/brcypt.service';
+import { TokenService } from '../../../modules/token/token.service';
 
 @Injectable()
 export class SignInService {

@@ -9,7 +9,7 @@ import mongoose, { Model, Types } from 'mongoose';
 import {
   Product,
   ProductDocument,
-} from 'src/modules/products/schemes/products.scheme';
+} from '../../modules/products/schemes/products.scheme';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import {
@@ -19,7 +19,7 @@ import {
 } from './schemes/product-variation.scheme';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FitlerDto } from './dto/filter-product.dto';
-import { PaginatedResponse } from 'src/interface/paginated-response';
+import { PaginatedResponse } from '../../interface/paginated-response';
 import { ObjectId } from 'mongodb';
 
 @Injectable()

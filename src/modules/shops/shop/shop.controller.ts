@@ -13,7 +13,7 @@ import { ShopLoginDTO } from '../dto/login.dto';
 import { ShopService } from './shop.service';
 import { ShopFilterDto } from '../dto/filter.dto';
 import { ShopUpdateDto } from '../dto/update.dto';
-import { ROLE } from 'src/enum/role.enum';
+import { ROLE } from '../../../enum/role.enum';
 import { Roles } from '../../../decorators/role.decorators';
 import { OwnerShipGuard } from '../guards/ownership.guard';
 
