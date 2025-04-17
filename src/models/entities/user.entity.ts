@@ -1,7 +1,9 @@
+import { Order } from 'src/modules/orders/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -59,4 +61,7 @@ export class UserEntity {
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   verification_code_exp?: Date;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }

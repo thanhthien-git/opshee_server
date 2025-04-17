@@ -1,7 +1,9 @@
+import { Product } from 'src/modules/products/schemes/products.scheme';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
