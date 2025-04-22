@@ -3,11 +3,12 @@ import { HydratedDocument, Types } from 'mongoose';
 
 @Schema({ collection: 'productmodels' })
 export class ProductModel {
+  
   @Prop({ type: Types.ObjectId })
   product_id: Types.ObjectId;
 
-  @Prop({ type: Array })
-  model_list: ModelItem[];
+  @Prop({ type: Object })
+  variation_details: ModelItem;
 }
 
 export type ModelItem = {
@@ -15,7 +16,7 @@ export type ModelItem = {
   isDefault: boolean;
   price: number;
   stock: number;
-  // image: string;
+  image?: string;
 };
 
 export type ProductModelDocument = HydratedDocument<ProductModel>;

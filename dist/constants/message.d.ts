@@ -15,3 +15,9 @@ export declare const SUCCESS_MESSAGE: {
     UPDATE_SUCCESS: string;
     CHANGE_PASSWORD_SUCCESS: string;
 };
+export declare const ORDER_MESSAGE: {
+    CREATE: {
+        SUCCESS: string;
+        FAILED: string;
+    };
+};

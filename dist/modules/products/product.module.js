@@ -38,5 +38,6 @@ exports.ProductModule = ProductModule = __decorate([
             product_service_1.RedisProductService,
             cloudinary_service_1.CloudinaryService,
         ],
+        exports: [product_service_1.RedisProductService, product_repository_1.ProductRepository],
     })
 ], ProductModule);

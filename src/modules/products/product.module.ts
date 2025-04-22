@@ -31,5 +31,6 @@ import {
     RedisProductService,
     CloudinaryService,
   ],
+  exports: [RedisProductService, ProductRepository],
 })
 export class ProductModule {}

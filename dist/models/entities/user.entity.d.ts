@@ -1,3 +1,4 @@
+import { Order } from 'src/modules/orders/entities/order.entity';
 export declare class UserEntity {
     user_id?: number;
     user_name: string;
@@ -15,4 +16,5 @@ export declare class UserEntity {
     role?: string;
     verification_code?: string;
     verification_code_exp?: Date;
+    orders?: Order[];
 }

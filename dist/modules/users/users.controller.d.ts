@@ -17,6 +17,7 @@ export declare class UsersController {
         role?: string;
         verification_code?: string;
         verification_code_exp?: Date;
+        orders?: import("../orders/entities/order.entity").Order[];
     }>;
     changePassword(req: any, newPassword: string): Promise<{
         message: string;

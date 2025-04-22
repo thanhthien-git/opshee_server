@@ -22,3 +22,9 @@ export const SUCCESS_MESSAGE = {
   CHANGE_PASSWORD_SUCCESS: 'Đổi mật khẩu thành công',
 };
 
+export const ORDER_MESSAGE = {
+  CREATE : {
+    SUCCESS : "Order create success",
+    FAILED : "Order create failed, please try again later!"
+  }
+}

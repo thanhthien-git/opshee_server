@@ -63,5 +63,5 @@ export class UserEntity {
   verification_code_exp?: Date;
 
   @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
+  orders?: Order[];
 }

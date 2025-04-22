@@ -6,11 +6,14 @@ import { ProductModel, ProductModelDocument } from './schemes/product-variation.
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FitlerDto } from './dto/filter-product.dto';
 import { PaginatedResponse } from '../../interface/paginated-response';
+import { RedisService } from '../redis/redis/redis.service';
 export declare class ProductRepository {
     private productModel;
     private productItem;
     private readonly cloudinaryService;
-    constructor(productModel: Model<ProductDocument>, productItem: Model<ProductModelDocument>, cloudinaryService: CloudinaryService);
+    private readonly redisService;
+    private readonly logger;
+    constructor(productModel: Model<ProductDocument>, productItem: Model<ProductModelDocument>, cloudinaryService: CloudinaryService, redisService: RedisService);
     getProductById(id: string): Promise<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & Required<{
         _id: mongoose.mongo.BSON.ObjectId;
     }> & {
@@ -20,6 +23,7 @@ export declare class ProductRepository {
     }> & {
         __v: number;
     }>;
+    getVaritionPrice(id: string): Promise<any>;
     create(createProductDto: CreateProductDto, shopId: string): Promise<{
         product: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & Required<{
             _id: mongoose.mongo.BSON.ObjectId;
@@ -30,7 +34,7 @@ export declare class ProductRepository {
         }> & {
             __v: number;
         };
-        variation: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, ProductModel> & ProductModel & {
+        variation: mongoose.MergeType<mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, ProductModel> & ProductModel & {
             _id: Types.ObjectId;
         } & {
             __v: number;
@@ -40,7 +44,7 @@ export declare class ProductRepository {
             __v: number;
         } & Required<{
             _id: Types.ObjectId;
-        }>;
+        }>, Omit<ProductModel, "_id">>[];
     }>;
     update(updateDto: UpdateProductDto): Promise<{
         updatedProduct: mongoose.Document<unknown, {}, mongoose.Document<unknown, {}, Product> & Product & Required<{

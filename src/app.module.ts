@@ -18,6 +18,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ShopMiddleware } from './middlewares/auth/shop.middleware';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { TokenModule } from './modules/token/token.module';
+import { OrdersService } from './modules/orders/orders.service';
+import { LockUtil } from './modules/lock/lock.service';
 
 const PROTECTED_ROUTES = ['user'];
 @Module({
@@ -36,6 +38,8 @@ const PROTECTED_ROUTES = ['user'];
     }),
     DatabaseModule,
     JwtModule,
+    OrdersService,
+    LockUtil,
   ],
 })
 export class AppModule implements NestModule {

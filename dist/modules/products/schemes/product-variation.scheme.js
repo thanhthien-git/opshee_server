@@ -20,9 +20,9 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], ProductModel.prototype, "product_id", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Array }),
-    __metadata("design:type", Array)
-], ProductModel.prototype, "model_list", void 0);
+    (0, mongoose_1.Prop)({ type: Object }),
+    __metadata("design:type", Object)
+], ProductModel.prototype, "variation_details", void 0);
 exports.ProductModel = ProductModel = __decorate([
     (0, mongoose_1.Schema)({ collection: 'productmodels' })
 ], ProductModel);

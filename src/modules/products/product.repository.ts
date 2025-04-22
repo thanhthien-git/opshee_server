@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -21,19 +22,39 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { FitlerDto } from './dto/filter-product.dto';
 import { PaginatedResponse } from '../../interface/paginated-response';
 import { ObjectId } from 'mongodb';
+import { RedisService } from '../redis/redis/redis.service';
+import { ProductVariation } from './types/product.type';
 
 @Injectable()
 export class ProductRepository {
+  private readonly logger = new Logger(ProductRepository.name);
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(ProductModel.name)
     private productItem: Model<ProductModelDocument>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly redisService: RedisService,
   ) {}
 
   async getProductById(id: string) {
     const objectId = new ObjectId(id);
     return await this.productModel.findById(objectId);
+  }
+
+  async getVaritionPrice(id: string) {
+    try {
+      const cacheKey = `variation:price:${id}`;
+      let variationPrice;
+      variationPrice = this.redisService.get(cacheKey);
+      if (variationPrice) {
+        this.logger.log(`cache hit varition price for : ${id}`);
+        return variationPrice;
+      }
+      const variation = await this.productItem.findById(new ObjectId(id));
+      return variation.variation_details.price;
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   async create(createProductDto: CreateProductDto, shopId: string) {
@@ -50,14 +71,18 @@ export class ProductRepository {
     try {
       const productId = new mongoose.Types.ObjectId();
       //STEP 1: CREATE VARIATION
-      const productModelData = {
-        product_id: productId,
-        model_list: variation,
-      };
-
+      const variations: ProductModel[] = variation.map((item) => {
+        if (!item.tier_index || Number.isFinite(item.stock)) {
+          throw new BadRequestException('Invalid variation data');
+        }
+        return {
+          _id: new mongoose.Types.ObjectId(),
+          product_id: productId,
+          variation_details: item,
+        };
+      });
       //---define product data include its id---
-      const productItemRequest =
-        await this.productItem.create(productModelData);
+      const productItemRequest = await this.productItem.insertMany(variations);
 
       //STEP 2: create product first
       //---upload image--- : upload to storage -> assign to productImage using a string[]

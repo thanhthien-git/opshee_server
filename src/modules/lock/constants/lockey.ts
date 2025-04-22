@@ -1,0 +1,1 @@
+export const lockey = (key: string) : string => `lock:${key}`

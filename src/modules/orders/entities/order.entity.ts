@@ -13,7 +13,7 @@ import { OrderItemEntity } from './order-item.entity';
 @Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
-  order_id?: number;
+  order_id?: bigint;
 
   @Column()
   user_id: number;
@@ -38,8 +38,8 @@ export class Order {
   order_status: string;
 
   @ManyToOne(() => UserEntity, (user) => user.orders, { onDelete: 'SET NULL' })
-  user: UserEntity;
+  user?: UserEntity;
 
   @OneToMany(() => OrderItemEntity, (item) => item.order)
-  order_items : OrderItemEntity[]
+  order_items? : OrderItemEntity[]
 }

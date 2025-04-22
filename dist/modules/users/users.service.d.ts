@@ -16,6 +16,7 @@ export declare class UsersService {
         role?: string;
         verification_code?: string;
         verification_code_exp?: Date;
+        orders?: import("../orders/entities/order.entity").Order[];
     }>;
     updateInfo(data: UpdateInfoDto): Promise<{
         message: string;

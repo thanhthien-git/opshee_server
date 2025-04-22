@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var ProductRepository_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductRepository = void 0;
 const common_1 = require("@nestjs/common");
@@ -20,25 +21,50 @@ const products_scheme_1 = require("../../modules/products/schemes/products.schem
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const product_variation_scheme_1 = require("./schemes/product-variation.scheme");
 const mongodb_1 = require("mongodb");
-let ProductRepository = class ProductRepository {
-    constructor(productModel, productItem, cloudinaryService) {
+const redis_service_1 = require("../redis/redis/redis.service");
+let ProductRepository = ProductRepository_1 = class ProductRepository {
+    constructor(productModel, productItem, cloudinaryService, redisService) {
         this.productModel = productModel;
         this.productItem = productItem;
         this.cloudinaryService = cloudinaryService;
+        this.redisService = redisService;
+        this.logger = new common_1.Logger(ProductRepository_1.name);
     }
     async getProductById(id) {
         const objectId = new mongodb_1.ObjectId(id);
         return await this.productModel.findById(objectId);
     }
+    async getVaritionPrice(id) {
+        try {
+            const cacheKey = `variation:price:${id}`;
+            let variationPrice;
+            variationPrice = this.redisService.get(cacheKey);
+            if (variationPrice) {
+                this.logger.log(`cache hit varition price for : ${id}`);
+                return variationPrice;
+            }
+            const variation = await this.productItem.findById(new mongodb_1.ObjectId(id));
+            return variation.variation_details.price;
+        }
+        catch (err) {
+            throw new Error(err);
+        }
+    }
     async create(createProductDto, shopId) {
         const { productVariationList, productAttributes, productBrandId, productCategory, productName, variation, productImages, } = createProductDto;
         try {
             const productId = new mongoose_2.default.Types.ObjectId();
-            const productModelData = {
-                product_id: productId,
-                model_list: variation,
-            };
-            const productItemRequest = await this.productItem.create(productModelData);
+            const variations = variation.map((item) => {
+                if (!item.tier_index || Number.isFinite(item.stock)) {
+                    throw new common_1.BadRequestException('Invalid variation data');
+                }
+                return {
+                    _id: new mongoose_2.default.Types.ObjectId(),
+                    product_id: productId,
+                    variation_details: item,
+                };
+            });
+            const productItemRequest = await this.productItem.insertMany(variations);
             let imageUrls = [];
             if (productImages.length === 1) {
                 imageUrls[0] = await this.cloudinaryService.uploadFile(productImages[0]);
@@ -191,11 +217,12 @@ let ProductRepository = class ProductRepository {
     }
 };
 exports.ProductRepository = ProductRepository;
-exports.ProductRepository = ProductRepository = __decorate([
+exports.ProductRepository = ProductRepository = ProductRepository_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(products_scheme_1.Product.name)),
     __param(1, (0, mongoose_1.InjectModel)(product_variation_scheme_1.ProductModel.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
-        cloudinary_service_1.CloudinaryService])
+        cloudinary_service_1.CloudinaryService,
+        redis_service_1.RedisService])
 ], ProductRepository);

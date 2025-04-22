@@ -20,7 +20,8 @@ let RedisProductService = class RedisProductService {
         this.redisService = redisService;
     }
     async getProductById(id) {
-        return await this.redisService.getOrSet(id, async () => {
+        const cacheKey = `product:${id}`;
+        return await this.redisService.getOrSet(cacheKey, async () => {
             return this.productRepository.getProductById(id);
         });
     }

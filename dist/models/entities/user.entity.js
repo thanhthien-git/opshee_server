@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntity = void 0;
+const order_entity_1 = require("../../modules/orders/entities/order.entity");
 const typeorm_1 = require("typeorm");
 let UserEntity = class UserEntity {
 };
@@ -82,6 +83,10 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], UserEntity.prototype, "verification_code_exp", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => order_entity_1.Order, (order) => order.user),
+    __metadata("design:type", Array)
+], UserEntity.prototype, "orders", void 0);
 exports.UserEntity = UserEntity = __decorate([
     (0, typeorm_1.Entity)('users')
 ], UserEntity);

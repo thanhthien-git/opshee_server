@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SUCCESS_MESSAGE = exports.NOTIFY = exports.ERROR_AUTH = exports.ERROR_MESSAGE = void 0;
+exports.ORDER_MESSAGE = exports.SUCCESS_MESSAGE = exports.NOTIFY = exports.ERROR_AUTH = exports.ERROR_MESSAGE = void 0;
 exports.ERROR_MESSAGE = {
     USER_NOT_FOUND: 'Không tìm thấy người dùng',
     WRONG_PASSWORD: 'Sai mật khẩu',
@@ -19,4 +19,10 @@ exports.NOTIFY = {
 exports.SUCCESS_MESSAGE = {
     UPDATE_SUCCESS: 'Cập nhật thành công',
     CHANGE_PASSWORD_SUCCESS: 'Đổi mật khẩu thành công',
+};
+exports.ORDER_MESSAGE = {
+    CREATE: {
+        SUCCESS: "Order create success",
+        FAILED: "Order create failed, please try again later!"
+    }
 };

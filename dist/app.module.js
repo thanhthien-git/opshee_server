@@ -20,6 +20,8 @@ const config_1 = require("@nestjs/config");
 const shop_middleware_1 = require("./middlewares/auth/shop.middleware");
 const cloudinary_module_1 = require("./modules/cloudinary/cloudinary.module");
 const token_module_1 = require("./modules/token/token.module");
+const orders_service_1 = require("./modules/orders/orders.service");
+const lock_service_1 = require("./modules/lock/lock.service");
 const PROTECTED_ROUTES = ['user'];
 let AppModule = class AppModule {
     configure(consumer) {
@@ -47,6 +49,8 @@ exports.AppModule = AppModule = __decorate([
             }),
             database_module_1.DatabaseModule,
             jwt_1.JwtModule,
+            orders_service_1.OrdersService,
+            lock_service_1.LockUtil,
         ],
     })
 ], AppModule);

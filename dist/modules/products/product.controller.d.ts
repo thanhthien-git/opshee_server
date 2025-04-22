@@ -26,7 +26,7 @@ export declare class ProductController {
         }> & {
             __v: number;
         };
-        variation: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & {
+        variation: import("mongoose").MergeType<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & {
             _id: import("mongoose").Types.ObjectId;
         } & {
             __v: number;
@@ -36,7 +36,7 @@ export declare class ProductController {
             __v: number;
         } & Required<{
             _id: import("mongoose").Types.ObjectId;
-        }>;
+        }>, Omit<import("./schemes/product-variation.scheme").ProductModel, "_id">>[];
     }>;
     update(files: Express.Multer.File[], data: string): Promise<{
         updatedProduct: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{
