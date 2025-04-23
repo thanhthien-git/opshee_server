@@ -6,7 +6,7 @@ import { OrderItemEntity } from './entities/order-item.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { ORDER_MESSAGE } from 'src/constants/message';
 import { StocksService } from '../stocks/stocks.service';
-import { Utils } from 'src/utils/util';
+import { Utils } from '../../utils/util';
 import { ProductRepository } from '../products/product.repository';
 import { IOrderItem } from './interfaces/order-item.interface';
 import { OrderContextService } from './context/order-context.service';
