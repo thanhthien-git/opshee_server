@@ -17,6 +17,7 @@ const user_entity_1 = require("../../models/entities/user.entity");
 const shop_entity_1 = require("../../models/entities/shop.entity");
 const stocks_module_1 = require("../stocks/stocks.module");
 const order_context_service_1 = require("./context/order-context.service");
+const product_module_1 = require("../products/product.module");
 let OrdersModule = class OrdersModule {
 };
 exports.OrdersModule = OrdersModule;
@@ -25,9 +26,10 @@ exports.OrdersModule = OrdersModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forFeature([order_item_entity_1.OrderItemEntity, order_entity_1.Order, user_entity_1.UserEntity, shop_entity_1.ShopEntity]),
             stocks_module_1.StocksModule,
+            product_module_1.ProductModule,
         ],
         controllers: [orders_controller_1.OrdersController],
         providers: [orders_service_1.OrdersService, order_context_service_1.OrderContextService],
-        exports: [orders_service_1.OrdersService],
+        exports: [orders_service_1.OrdersService, order_context_service_1.OrderContextService],
     })
 ], OrdersModule);

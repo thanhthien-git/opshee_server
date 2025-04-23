@@ -12,7 +12,7 @@ import { OrderItemEntity } from './order-item.entity';
 
 @Entity('orders')
 export class Order {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   order_id?: bigint;
 
   @Column()
@@ -41,5 +41,5 @@ export class Order {
   user?: UserEntity;
 
   @OneToMany(() => OrderItemEntity, (item) => item.order)
-  order_items? : OrderItemEntity[]
+  order_items?: OrderItemEntity[];
 }

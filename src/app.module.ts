@@ -18,6 +18,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { TokenModule } from './modules/token/token.module';
 import { OrdersService } from './modules/orders/orders.service';
 import { LockUtil } from './modules/lock/lock.service';
+import { OrdersModule } from './modules/orders/orders.module';
 
 const PROTECTED_ROUTES = ['user'];
 @Module({
@@ -36,8 +37,7 @@ const PROTECTED_ROUTES = ['user'];
     }),
     DatabaseModule,
     JwtModule,
-    OrdersService,
-    LockUtil,
+    OrdersModule,
   ],
 })
 export class AppModule implements NestModule {

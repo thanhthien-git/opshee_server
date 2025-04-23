@@ -3,10 +3,10 @@ import { Order } from './order.entity';
 
 @Entity('order_items')
 export class OrderItemEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   order_item_id?: bigint;
 
-  @Column()
+  @Column({ type: 'bigint' })
   order_id?: bigint;
 
   @Column()

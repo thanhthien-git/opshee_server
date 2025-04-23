@@ -13,8 +13,8 @@ const products_scheme_1 = require("../products/schemes/products.scheme");
 const product_variation_scheme_1 = require("../products/schemes/product-variation.scheme");
 const redis_module_1 = require("../redis/redis/redis.module");
 const stocks_service_1 = require("./stocks.service");
-const product_repository_1 = require("../products/product.repository");
 const lock_module_1 = require("../lock/lock.module");
+const product_module_1 = require("../products/product.module");
 let StocksModule = class StocksModule {
 };
 exports.StocksModule = StocksModule;
@@ -26,9 +26,10 @@ exports.StocksModule = StocksModule = __decorate([
                 { name: product_variation_scheme_1.ProductModel.name, schema: product_variation_scheme_1.ProductModelSchema },
             ]),
             redis_module_1.RedisModule,
-            lock_module_1.LockModule
+            product_module_1.ProductModule,
+            lock_module_1.LockModule,
         ],
-        providers: [product_repository_1.ProductRepository],
+        providers: [stocks_service_1.StocksService],
         exports: [stocks_service_1.StocksService],
     })
 ], StocksModule);

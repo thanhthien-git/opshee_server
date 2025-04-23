@@ -16,11 +16,11 @@ let OrderItemEntity = class OrderItemEntity {
 };
 exports.OrderItemEntity = OrderItemEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)({ type: 'bigint' }),
     __metadata("design:type", BigInt)
 ], OrderItemEntity.prototype, "order_item_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'bigint' }),
     __metadata("design:type", BigInt)
 ], OrderItemEntity.prototype, "order_id", void 0);
 __decorate([
