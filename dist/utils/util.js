@@ -7,5 +7,8 @@ class Utils {
         const buffer = crypto.randomBytes(8);
         return BigInt('0x' + buffer.toString('hex'));
     }
+    static bigIntFromString(str) {
+        return BigInt(str);
+    }
 }
 exports.Utils = Utils;

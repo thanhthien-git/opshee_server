@@ -1,4 +1,4 @@
-import { Order } from 'src/modules/orders/entities/order.entity';
+import { Order } from '../../modules/orders/entities/order.entity';
 export declare class UserEntity {
     user_id?: number;
     user_name: string;

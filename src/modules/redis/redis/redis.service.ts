@@ -23,12 +23,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       },
     });
     this.client.on('ready', () => this.logger.log('Redis connected'));
-    this.client.on('error', (err) => this.logger.error(`Redis connection failed: ${err}`));
-    this.client.on('reconnecting', () => this.logger.log('Redis reconnecting...'));
+    this.client.on('error', (err) =>
+      this.logger.error(`Redis connection failed: ${err}`),
+    );
+    this.client.on('reconnecting', () =>
+      this.logger.log('Redis reconnecting...'),
+    );
   }
 
   getClient() {
-    return this.client
+    return this.client;
   }
 
   async onModuleInit() {
@@ -68,6 +72,33 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const setData = await callback();
     await this.set(key, setData, ttl);
     return setData;
+  }
+
+  async checkCacheMemo<T>(
+    cacheKey: string,
+    callback: () => Promise<T>,
+    fallbackValue: T | null = null,
+  ): Promise<T | undefined> {
+    try {
+      let response: T = await this.get(cacheKey);
+      if (response) {
+        this.logger.log(`Cache hit for key : ${cacheKey}`);
+        return response;
+      }
+      response = await callback();
+      await this.set(cacheKey, response, this.REDIS_TTL);
+      this.logger.log(`Set value for key : ${cacheKey}`);
+      return response;
+    } catch (err) {
+      this.logger.error('Error in checkCacheMemo:', err);
+
+      if (fallbackValue) {
+        this.logger.log(`Returning fallback value for key: ${cacheKey}`);
+        return fallbackValue;
+      }
+
+      throw new Error(err);
+    }
   }
 
   async delete(key: string): Promise<void> {

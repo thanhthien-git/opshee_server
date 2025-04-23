@@ -13,11 +13,10 @@ const mongoose_1 = require("@nestjs/mongoose");
 const products_scheme_1 = require("../../modules/products/schemes/products.scheme");
 const redis_module_1 = require("../redis/redis/redis.module");
 const redis_service_1 = require("../redis/redis/redis.service");
-const product_service_1 = require("./product.service");
-const product_repository_1 = require("./product.repository");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const cloudinary_module_1 = require("../cloudinary/cloudinary.module");
 const product_variation_scheme_1 = require("./schemes/product-variation.scheme");
+const product_service_1 = require("./product.service");
 let ProductModule = class ProductModule {
 };
 exports.ProductModule = ProductModule;
@@ -32,12 +31,7 @@ exports.ProductModule = ProductModule = __decorate([
             cloudinary_module_1.CloudinaryModule,
         ],
         controllers: [product_controller_1.ProductController],
-        providers: [
-            product_repository_1.ProductRepository,
-            redis_service_1.RedisService,
-            product_service_1.RedisProductService,
-            cloudinary_service_1.CloudinaryService,
-        ],
-        exports: [product_service_1.RedisProductService, product_repository_1.ProductRepository],
+        providers: [product_service_1.ProductService, redis_service_1.RedisService, cloudinary_service_1.CloudinaryService],
+        exports: [product_service_1.ProductService],
     })
 ], ProductModule);

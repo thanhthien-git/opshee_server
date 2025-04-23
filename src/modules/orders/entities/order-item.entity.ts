@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './order.entity';
+import { ShopEntity } from '../../../models/entities/shop.entity';
 
 @Entity('order_items')
 export class OrderItemEntity {
@@ -21,8 +22,14 @@ export class OrderItemEntity {
   @Column()
   order_item_price: number;
 
+  @Column()
+  shop_id: number;
+
   @ManyToOne(() => Order, (order) => order.order_items, {
     onDelete: 'SET NULL',
   })
   order?: Order;
+
+  @ManyToOne(() => ShopEntity, (shop) => shop.orders, { onDelete: 'SET NULL' })
+  shop?: ShopEntity;
 }

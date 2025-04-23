@@ -5,4 +5,8 @@ export class Utils {
     const buffer = crypto.randomBytes(8);
     return BigInt('0x' + buffer.toString('hex'));
   }
+
+  static bigIntFromString(str: string): bigint {
+    return BigInt(str);
+  }
 }

@@ -12,5 +12,6 @@ export declare class RedisService implements OnModuleInit, OnModuleDestroy {
     set(key: string, value: any, ttl?: number): Promise<void>;
     get<T>(key: string): Promise<T | undefined>;
     getOrSet<T>(key: string, callback: () => Promise<T>, ttl?: number): Promise<T>;
+    checkCacheMemo<T>(cacheKey: string, callback: () => Promise<T>, fallbackValue?: T | null): Promise<T | undefined>;
     delete(key: string): Promise<void>;
 }

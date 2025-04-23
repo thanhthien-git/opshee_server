@@ -1,3 +1,4 @@
+import { OrderItemEntity } from '../../modules/orders/entities/order-item.entity';
 export declare class ShopEntity {
     shop_id?: number;
     shop_name: string;
@@ -9,4 +10,5 @@ export declare class ShopEntity {
     shop_type: string;
     is_favourite: boolean;
     is_Deleted: boolean;
+    orders?: OrderItemEntity[];
 }

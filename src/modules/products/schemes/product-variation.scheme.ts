@@ -3,7 +3,9 @@ import { HydratedDocument, Types } from 'mongoose';
 
 @Schema({ collection: 'productmodels' })
 export class ProductModel {
-  
+  @Prop({ type: Types.ObjectId })
+  _id?: Types.ObjectId;
+
   @Prop({ type: Types.ObjectId })
   product_id: Types.ObjectId;
 

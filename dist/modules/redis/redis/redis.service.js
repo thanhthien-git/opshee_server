@@ -64,6 +64,27 @@ let RedisService = RedisService_1 = class RedisService {
         await this.set(key, setData, ttl);
         return setData;
     }
+    async checkCacheMemo(cacheKey, callback, fallbackValue = null) {
+        try {
+            let response = await this.get(cacheKey);
+            if (response) {
+                this.logger.log(`Cache hit for key : ${cacheKey}`);
+                return response;
+            }
+            response = await callback();
+            await this.set(cacheKey, response, this.REDIS_TTL);
+            this.logger.log(`Set value for key : ${cacheKey}`);
+            return response;
+        }
+        catch (err) {
+            this.logger.error('Error in checkCacheMemo:', err);
+            if (fallbackValue) {
+                this.logger.log(`Returning fallback value for key: ${cacheKey}`);
+                return fallbackValue;
+            }
+            throw new Error(err);
+        }
+    }
     async delete(key) {
         await this.client.del(key);
     }

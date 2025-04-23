@@ -7,14 +7,13 @@ import {
 } from '../../modules/products/schemes/products.scheme';
 import { RedisModule } from '../redis/redis/redis.module';
 import { RedisService } from '../redis/redis/redis.service';
-import { RedisProductService } from './product.service';
-import { ProductRepository } from './product.repository';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import {
   ProductModel,
   ProductModelSchema,
 } from './schemes/product-variation.scheme';
+import { ProductService } from './product.service';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -25,12 +24,7 @@ import {
     CloudinaryModule,
   ],
   controllers: [ProductController],
-  providers: [
-    ProductRepository,
-    RedisService,
-    RedisProductService,
-    CloudinaryService,
-  ],
-  exports: [RedisProductService, ProductRepository],
+  providers: [ProductService, RedisService, CloudinaryService],
+  exports: [ProductService],
 })
 export class ProductModule {}

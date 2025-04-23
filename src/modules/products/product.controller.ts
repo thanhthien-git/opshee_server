@@ -11,7 +11,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { RedisProductService } from './product.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { RolesGuard } from '../../guards/role/role.guard';
@@ -21,21 +20,20 @@ import {
   CreateProductDto,
   ProductAttributeDto,
 } from './dto/create-product.dto';
-import { ProductRepository } from './product.repository';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductOwnerShipGuard } from './guard/product_owner.guard';
+import { ProductService } from './product.service';
 
 @Controller('product')
 export class ProductController {
   constructor(
-    private readonly redisProductService: RedisProductService,
-    private readonly productRepository: ProductRepository,
+    private readonly productService: ProductService,
     private readonly storageService: CloudinaryService,
   ) {}
 
   @Get()
   async getProductById(@Query('id') id: string) {
-    return await this.redisProductService.getProductById(id);
+    return await this.productService.getProductById(id);
   }
 
   @Get()
@@ -60,7 +58,7 @@ export class ProductController {
     };
 
     const userId = req.user.userId;
-    return await this.productRepository.create(requestData, userId);
+    return await this.productService.create(requestData, userId);
   }
 
   @UseGuards(RolesGuard)
@@ -81,7 +79,7 @@ export class ProductController {
       ...parsedData,
     };
 
-    return await this.productRepository.update(requestData);
+    return await this.productService.update(requestData);
   }
 
   @UseGuards(RolesGuard)
@@ -90,6 +88,6 @@ export class ProductController {
   @Delete('delete')
   async delete(@Body('productId') productId: string, @Req() req) {
     const shopId = req.user.userId;
-    return await this.productRepository.delete(productId, shopId);
+    return await this.productService.delete(productId, shopId);
   }
 }

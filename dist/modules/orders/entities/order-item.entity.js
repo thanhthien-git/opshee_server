@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderItemEntity = void 0;
 const typeorm_1 = require("typeorm");
 const order_entity_1 = require("./order.entity");
+const shop_entity_1 = require("../../../models/entities/shop.entity");
 let OrderItemEntity = class OrderItemEntity {
 };
 exports.OrderItemEntity = OrderItemEntity;
@@ -40,11 +41,19 @@ __decorate([
     __metadata("design:type", Number)
 ], OrderItemEntity.prototype, "order_item_price", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], OrderItemEntity.prototype, "shop_id", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => order_entity_1.Order, (order) => order.order_items, {
         onDelete: 'SET NULL',
     }),
     __metadata("design:type", order_entity_1.Order)
 ], OrderItemEntity.prototype, "order", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => shop_entity_1.ShopEntity, (shop) => shop.orders, { onDelete: 'SET NULL' }),
+    __metadata("design:type", shop_entity_1.ShopEntity)
+], OrderItemEntity.prototype, "shop", void 0);
 exports.OrderItemEntity = OrderItemEntity = __decorate([
     (0, typeorm_1.Entity)('order_items')
 ], OrderItemEntity);

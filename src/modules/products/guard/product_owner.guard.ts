@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { RedisProductService } from '../product.service';
 import { ROLE } from '../../../enum/role.enum';
+import { ProductService } from '../product.service';
 
 export class ProductOwnerShipGuard implements CanActivate {
-  constructor(private productService: RedisProductService) {}
+  constructor(private productService: ProductService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

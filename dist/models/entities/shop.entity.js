@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShopEntity = void 0;
+const order_item_entity_1 = require("../../modules/orders/entities/order-item.entity");
 const typeorm_1 = require("typeorm");
 let ShopEntity = class ShopEntity {
 };
@@ -58,6 +59,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'boolean' }),
     __metadata("design:type", Boolean)
 ], ShopEntity.prototype, "is_Deleted", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => order_item_entity_1.OrderItemEntity, (item) => item.shop),
+    __metadata("design:type", Array)
+], ShopEntity.prototype, "orders", void 0);
 exports.ShopEntity = ShopEntity = __decorate([
     (0, typeorm_1.Entity)('shops')
 ], ShopEntity);

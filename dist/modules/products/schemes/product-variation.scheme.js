@@ -18,6 +18,10 @@ exports.ProductModel = ProductModel;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
+], ProductModel.prototype, "_id", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId }),
+    __metadata("design:type", mongoose_2.Types.ObjectId)
 ], ProductModel.prototype, "product_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Object }),

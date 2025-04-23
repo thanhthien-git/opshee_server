@@ -14,22 +14,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const common_1 = require("@nestjs/common");
-const product_service_1 = require("./product.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const role_guard_1 = require("../../guards/role/role.guard");
 const role_enum_1 = require("../../enum/role.enum");
 const role_decorators_1 = require("../../decorators/role.decorators");
-const product_repository_1 = require("./product.repository");
 const product_owner_guard_1 = require("./guard/product_owner.guard");
+const product_service_1 = require("./product.service");
 let ProductController = class ProductController {
-    constructor(redisProductService, productRepository, storageService) {
-        this.redisProductService = redisProductService;
-        this.productRepository = productRepository;
+    constructor(productService, storageService) {
+        this.productService = productService;
         this.storageService = storageService;
     }
     async getProductById(id) {
-        return await this.redisProductService.getProductById(id);
+        return await this.productService.getProductById(id);
     }
     async getDailyDiscover(req) {
         return await req;
@@ -41,7 +39,7 @@ let ProductController = class ProductController {
             ...parsedData,
         };
         const userId = req.user.userId;
-        return await this.productRepository.create(requestData, userId);
+        return await this.productService.create(requestData, userId);
     }
     async update(files, data) {
         let parsedData = JSON.parse(data);
@@ -51,11 +49,11 @@ let ProductController = class ProductController {
             productImage: files,
             ...parsedData,
         };
-        return await this.productRepository.update(requestData);
+        return await this.productService.update(requestData);
     }
     async delete(productId, req) {
         const shopId = req.user.userId;
-        return await this.productRepository.delete(productId, shopId);
+        return await this.productService.delete(productId, shopId);
     }
 };
 exports.ProductController = ProductController;
@@ -110,7 +108,6 @@ __decorate([
 ], ProductController.prototype, "delete", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
-    __metadata("design:paramtypes", [product_service_1.RedisProductService,
-        product_repository_1.ProductRepository,
+    __metadata("design:paramtypes", [product_service_1.ProductService,
         cloudinary_service_1.CloudinaryService])
 ], ProductController);

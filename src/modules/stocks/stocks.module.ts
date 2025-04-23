@@ -7,7 +7,6 @@ import {
 } from '../products/schemes/product-variation.scheme';
 import { RedisModule } from '../redis/redis/redis.module';
 import { StocksService } from './stocks.service';
-import { ProductRepository } from '../products/product.repository';
 import { LockModule } from '../lock/lock.module';
 import { ProductModule } from '../products/product.module';
 

@@ -1,4 +1,4 @@
-import { Product } from 'src/modules/products/schemes/products.scheme';
+import { OrderItemEntity } from '../../modules/orders/entities/order-item.entity';
 import {
   Column,
   CreateDateColumn,
@@ -43,4 +43,7 @@ export class ShopEntity {
 
   @Column({ type: 'boolean' })
   is_Deleted: boolean;
+
+  @OneToMany(() => OrderItemEntity, (item) => item.shop)
+  orders?: OrderItemEntity[];
 }

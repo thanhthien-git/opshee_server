@@ -1,11 +1,9 @@
-import { RedisProductService } from './product.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { ProductRepository } from './product.repository';
+import { ProductService } from './product.service';
 export declare class ProductController {
-    private readonly redisProductService;
-    private readonly productRepository;
+    private readonly productService;
     private readonly storageService;
-    constructor(redisProductService: RedisProductService, productRepository: ProductRepository, storageService: CloudinaryService);
+    constructor(productService: ProductService, storageService: CloudinaryService);
     getProductById(id: string): Promise<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{
         _id: import("bson").ObjectId;
     }> & {
@@ -26,17 +24,15 @@ export declare class ProductController {
         }> & {
             __v: number;
         };
-        variation: import("mongoose").MergeType<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & {
+        variation: import("mongoose").MergeType<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & Required<{
             _id: import("mongoose").Types.ObjectId;
-        } & {
+        }> & {
             __v: number;
-        }> & import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & {
+        }> & import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & Required<{
             _id: import("mongoose").Types.ObjectId;
-        } & {
+        }> & {
             __v: number;
-        } & Required<{
-            _id: import("mongoose").Types.ObjectId;
-        }>, Omit<import("./schemes/product-variation.scheme").ProductModel, "_id">>[];
+        }, Omit<import("./schemes/product-variation.scheme").ProductModel, "_id">>[];
     }>;
     update(files: Express.Multer.File[], data: string): Promise<{
         updatedProduct: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{

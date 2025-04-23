@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/models/entities/user.entity';
+import { UserEntity } from '../../../models/entities/user.entity';
 import { OrderItemEntity } from './order-item.entity';
 export declare class Order {
     order_id?: bigint;

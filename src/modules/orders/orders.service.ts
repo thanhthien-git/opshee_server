@@ -1,67 +1,92 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { OrderItemEntity } from './entities/order-item.entity';
 import { CreateOrderDto } from './dtos/create-order.dto';
-import { ORDER_MESSAGE } from 'src/constants/message';
+import { ORDER_MESSAGE } from '../../constants/message';
 import { StocksService } from '../stocks/stocks.service';
 import { Utils } from '../../utils/util';
-import { ProductRepository } from '../products/product.repository';
 import { IOrderItem } from './interfaces/order-item.interface';
 import { OrderContextService } from './context/order-context.service';
 import { ORDER_STATUS } from './enums/order-status.enum';
+import { RedisService } from '../redis/redis/redis.service';
+import { ProductService } from '../products/product.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(Order) private orderReposity: Repository<Order>,
     @InjectRepository(OrderItemEntity)
-    private orderItemRepository: Repository<Order>,
+    private orderItemRepository: Repository<OrderItemEntity>,
     private stockService: StocksService,
-    private productService: ProductRepository,
+    private productService: ProductService,
     private readonly context: OrderContextService,
+    private redisService: RedisService,
   ) {}
+  private readonly logger = new Logger(OrdersService.name);
+  private ORDER_CACHE_KEY = (key: string) => `order:${key}`;
 
-  async validateItem(
-    orderItem: IOrderItem,
-  ): Promise<{ item: OrderItemEntity; price: number }> {
+  private async validateItem(orderItem: IOrderItem): Promise<number> {
     const itemInStock = await this.stockService.getStock(orderItem.productId);
-    const itemPrice = await this.productService.getVaritionPrice(
-      orderItem.productId,
-    );
+
     //return err if stock is not valid
     if (itemInStock < 0 || itemInStock < orderItem.quantity) {
       throw new BadRequestException({
         message: `out of stock : ${orderItem.productName}`,
       });
     }
-    const item: OrderItemEntity = {
-      order_item_id: Utils.generateBigInt(),
-      order_id: this.context.getOrderId(),
-      order_item_price: itemPrice,
-      order_item_quantity: orderItem.quantity,
-      product_id: orderItem.productId,
-      product_name: orderItem.productName,
-    };
-    const price = item.order_item_quantity * item.order_item_price;
-    return { item, price };
+
+    return itemInStock;
   }
 
-  async createOrderItem(
+  private async createOrderDetails(
     dto: CreateOrderDto,
-  ): Promise<{ orderItems: OrderItemEntity[]; orderPrice: number }> {
+    userId: number,
+  ): Promise<{ order: Order; orderItems: OrderItemEntity[] }> {
     try {
       let orderItems: OrderItemEntity[] = [];
-      let orderPrice = 0;
+      let totalPrice = 0;
+      const orderId = this.context.getOrderId();
       const { products } = dto;
+      const ids: string[] = products.map((product) => product.productId);
       //create order items
-      for (const product of products) {
-        const { item, price } = await this.validateItem(product);
+      const variations = await this.productService.getProductVariation(ids);
+      for (let i = 0; i < products.length; i++) {
+        //validate stock step
+        let inStock = await this.validateItem(products[i]);
+        //desctruting infomation of each variations
+        const { productId, productName, quantity, shopId } = products[i];
+        const { tier_index, price } = variations[i].variation_details;
+        let itemPrice = price * quantity;
+        //create details of order items
+        let item: OrderItemEntity = {
+          order_item_id: Utils.generateBigInt(),
+          order_item_price: itemPrice,
+          order_item_quantity: inStock,
+          product_name: `${productName}_${tier_index}`,
+          product_id: productId,
+          shop_id: Number(shopId),
+          order_id: orderId,
+        };
+        //push order item to order
         orderItems.push(item);
-        orderPrice += price;
+        totalPrice += itemPrice;
       }
-      return { orderItems, orderPrice };
+
+      //create order detail
+      const order: Order = {
+        order_id: orderId,
+        order_discount: 0,
+        order_price: totalPrice,
+        order_status: ORDER_STATUS.PENDING,
+        user_id: userId,
+        order_create_at: new Date(),
+        order_update_at: new Date(),
+      };
+
+      //return order & order items
+      return { order, orderItems };
     } catch (err) {
       throw new BadRequestException(err);
     }
@@ -73,23 +98,106 @@ export class OrdersService {
       let orderId = Utils.generateBigInt();
       this.context.setOrderId(orderId);
       //step 1: create order item  by validating the stock
-      const { orderPrice, orderItems } = await this.createOrderItem(dto);
-      console.log(`the orderItems : ${orderItems}`);
-      console.log(`the order price: ${orderPrice}`);
+      const { order, orderItems } = await this.createOrderDetails(dto, userId);
+      console.log(`the order : ${order}`);
+      console.log(`the order items: ${orderItems}`);
       //add to the db step
-      const order: Order = {
-        order_id: orderId,
-        order_discount: 0,
-        order_price: orderPrice,
-        order_status: ORDER_STATUS.PENDING,
-        user_id: userId,
-        order_create_at: new Date(),
-        order_update_at: new Date(),
-      };
-      console.log(`the total order is :${order}`);
-      //insert order to db
+      //insert order to db - using Job Queue avoid crash server
     } catch (err) {
       throw new BadRequestException({ message: ORDER_MESSAGE.CREATE.FAILED });
+    }
+  }
+
+  async getById(orderId: string): Promise<Order> {
+    try {
+      const cacheKey = this.ORDER_CACHE_KEY(orderId);
+      const id = BigInt(orderId);
+      const order = await this.redisService.checkCacheMemo(
+        cacheKey,
+        async () => {
+          return await this.orderReposity.findOne({
+            where: { order_id: id },
+            relations: ['order_items'],
+          });
+        },
+        new Order(),
+      );
+      return order;
+    } catch (err) {
+      this.logger.error(`Error when querying order id : ${orderId}`);
+      throw new Error(err);
+    }
+  }
+
+  async getOrderByUser(userId: number): Promise<Order[]> {
+    try {
+      const cacheKey = this.ORDER_CACHE_KEY(`userId:${String(userId)}`);
+      const orders: Order[] =
+        await this.redisService.checkCacheMemo(cacheKey, async () => {
+          return await this.orderReposity.find({
+            where: { user_id: userId },
+          });
+        }, [new Order()]);
+
+      return orders;
+    } catch (err) {
+      this.logger.error(`Error when querying user's order history : ${userId}`);
+      throw new Error(err);
+    }
+  }
+
+  async getOrderByShop(shopId: string): Promise<OrderItemEntity[]> {
+    try {
+      const cacheKey = this.ORDER_CACHE_KEY(`shopId:${String(shopId)}`);
+      const orders: OrderItemEntity[] = await this.redisService.checkCacheMemo(
+        cacheKey,
+        async () => {
+          return await this.orderItemRepository.find({
+            where: { shop_id: Number(shopId) },
+          });
+        },
+        null,
+      );
+
+      return orders;
+    } catch (err) {
+      this.logger.error(`Error when querying user's order history : ${shopId}`);
+      throw new Error(err);
+    }
+  }
+
+  async updateOrderStatus(
+    orderId: string,
+    status: keyof typeof ORDER_STATUS,
+  ): Promise<UpdateResult> {
+    try {
+      return this.orderReposity.update(
+        {
+          order_id: BigInt(orderId),
+        },
+        {
+          order_status: status,
+        },
+      );
+    } catch (err) {
+      this.logger.error(`Error while changing status of order: ${orderId}`);
+      throw new Error(err);
+    }
+  }
+
+  async cancelOrder(orderId: string): Promise<UpdateResult> {
+    try {
+      return await this.orderReposity.update(
+        {
+          order_id: BigInt(orderId),
+        },
+        {
+          order_status: ORDER_STATUS.CANCEL,
+        },
+      );
+    } catch (err) {
+      this.logger.error(`Error while cancel orderId: ${orderId}`);
+      throw new Error(err);
     }
   }
 }
