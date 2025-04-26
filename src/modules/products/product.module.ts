@@ -10,15 +10,15 @@ import { RedisService } from '../redis/redis/redis.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import {
-  ProductModel,
-  ProductModelSchema,
+  ProductVariation  ,
+  ProductVariationSchema,
 } from './schemes/product-variation.scheme';
 import { ProductService } from './product.service';
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Product.name, schema: ProductSchema },
-      { name: ProductModel.name, schema: ProductModelSchema },
+      { name: ProductVariation.name, schema: ProductVariationSchema },
     ]),
     RedisModule,
     CloudinaryModule,

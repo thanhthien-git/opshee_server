@@ -1,4 +1,4 @@
-import { ModelItem } from '../schemes/product-variation.scheme';
+import { VariationDetail } from '../schemes/product-variation.scheme';
 import { ProductAtribute, ProductVariation } from '../types/product.type';
 
 export class UpdateProductDto {
@@ -9,5 +9,5 @@ export class UpdateProductDto {
   productAttributes?: ProductAtribute[];
   productVariationList?: ProductVariation[];
   productImage?: Express.Multer.File[];
-  modelList?: ModelItem[];
+  modelList?: VariationDetail[];
 }

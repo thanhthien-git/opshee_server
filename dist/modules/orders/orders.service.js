@@ -41,19 +41,20 @@ let OrdersService = OrdersService_1 = class OrdersService {
         const itemInStock = await this.stockService.getStock(orderItem.productId);
         if (itemInStock < 0 || itemInStock < orderItem.quantity) {
             throw new common_1.BadRequestException({
-                message: `out of stock : ${orderItem.productName}`,
+                message: `Out of stock : ${orderItem.productName}`,
             });
         }
         return itemInStock;
     }
-    async createOrderDetails(dto, userId) {
+    async createOrderDetails(products, userId) {
         try {
             let orderItems = [];
             let totalPrice = 0;
             const orderId = this.context.getOrderId();
-            const { products } = dto;
             const ids = products.map((product) => product.productId);
+            this.logger.debug(ids);
             const variations = await this.productService.getProductVariation(ids);
+            this.logger.debug(variations);
             for (let i = 0; i < products.length; i++) {
                 let inStock = await this.validateItem(products[i]);
                 const { productId, productName, quantity, shopId } = products[i];
@@ -83,6 +84,7 @@ let OrdersService = OrdersService_1 = class OrdersService {
             return { order, orderItems };
         }
         catch (err) {
+            this.logger.debug(err);
             throw new common_1.BadRequestException(err);
         }
     }
@@ -91,11 +93,10 @@ let OrdersService = OrdersService_1 = class OrdersService {
             const { products, expressType, userAddress, paidType } = dto;
             let orderId = util_1.Utils.generateBigInt();
             this.context.setOrderId(orderId);
-            const { order, orderItems } = await this.createOrderDetails(dto, userId);
-            console.log(`the order : ${order}`);
-            console.log(`the order items: ${orderItems}`);
+            const { order, orderItems } = await this.createOrderDetails(products, userId);
         }
         catch (err) {
+            this.logger.error(err);
             throw new common_1.BadRequestException({ message: message_1.ORDER_MESSAGE.CREATE.FAILED });
         }
     }

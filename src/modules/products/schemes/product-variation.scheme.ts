@@ -1,19 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 
-@Schema({ collection: 'productmodels' })
-export class ProductModel {
+@Schema({ collection: 'productvariations' })
+export class ProductVariation {
   @Prop({ type: Types.ObjectId })
   _id?: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId })
-  product_id: Types.ObjectId;
+  product_id?: Types.ObjectId;
 
   @Prop({ type: Object })
-  variation_details: ModelItem;
+  variation_details: VariationDetail;
 }
 
-export type ModelItem = {
+export type VariationDetail = {
   tier_index: number[];
   isDefault: boolean;
   price: number;
@@ -21,5 +21,6 @@ export type ModelItem = {
   image?: string;
 };
 
-export type ProductModelDocument = HydratedDocument<ProductModel>;
-export const ProductModelSchema = SchemaFactory.createForClass(ProductModel);
+export type ProductVariationDocument = HydratedDocument<ProductVariation>;
+export const ProductVariationSchema =
+  SchemaFactory.createForClass(ProductVariation);

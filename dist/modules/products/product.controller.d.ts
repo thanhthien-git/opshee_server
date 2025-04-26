@@ -24,15 +24,15 @@ export declare class ProductController {
         }> & {
             __v: number;
         };
-        variation: import("mongoose").MergeType<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & Required<{
+        variation: import("mongoose").MergeType<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductVariation> & import("./schemes/product-variation.scheme").ProductVariation & Required<{
             _id: import("mongoose").Types.ObjectId;
         }> & {
             __v: number;
-        }> & import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductModel> & import("./schemes/product-variation.scheme").ProductModel & Required<{
+        }> & import("mongoose").Document<unknown, {}, import("./schemes/product-variation.scheme").ProductVariation> & import("./schemes/product-variation.scheme").ProductVariation & Required<{
             _id: import("mongoose").Types.ObjectId;
         }> & {
             __v: number;
-        }, Omit<import("./schemes/product-variation.scheme").ProductModel, "_id">>[];
+        }, Omit<import("./schemes/product-variation.scheme").ProductVariation, "_id">>[];
     }>;
     update(files: Express.Multer.File[], data: string): Promise<{
         updatedProduct: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{
@@ -44,7 +44,7 @@ export declare class ProductController {
         }> & {
             __v: number;
         };
-        updatedProductItem: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{
+        updatedproductVariation: import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("./schemes/products.scheme").Product> & import("./schemes/products.scheme").Product & Required<{
             _id: import("bson").ObjectId;
         }> & {
             __v: number;

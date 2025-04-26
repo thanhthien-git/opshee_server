@@ -33,7 +33,7 @@ export class OrdersService {
     //return err if stock is not valid
     if (itemInStock < 0 || itemInStock < orderItem.quantity) {
       throw new BadRequestException({
-        message: `out of stock : ${orderItem.productName}`,
+        message: `Out of stock : ${orderItem.productName}`,
       });
     }
 
@@ -41,17 +41,18 @@ export class OrdersService {
   }
 
   private async createOrderDetails(
-    dto: CreateOrderDto,
+    products: IOrderItem[],
     userId: number,
   ): Promise<{ order: Order; orderItems: OrderItemEntity[] }> {
     try {
       let orderItems: OrderItemEntity[] = [];
       let totalPrice = 0;
       const orderId = this.context.getOrderId();
-      const { products } = dto;
       const ids: string[] = products.map((product) => product.productId);
+      this.logger.debug(ids);
       //create order items
       const variations = await this.productService.getProductVariation(ids);
+      this.logger.debug(variations);
       for (let i = 0; i < products.length; i++) {
         //validate stock step
         let inStock = await this.validateItem(products[i]);
@@ -88,6 +89,7 @@ export class OrdersService {
       //return order & order items
       return { order, orderItems };
     } catch (err) {
+      this.logger.debug(err);
       throw new BadRequestException(err);
     }
   }
@@ -98,12 +100,15 @@ export class OrdersService {
       let orderId = Utils.generateBigInt();
       this.context.setOrderId(orderId);
       //step 1: create order item  by validating the stock
-      const { order, orderItems } = await this.createOrderDetails(dto, userId);
-      console.log(`the order : ${order}`);
-      console.log(`the order items: ${orderItems}`);
+      const { order, orderItems } = await this.createOrderDetails(
+        products,
+        userId,
+      );
       //add to the db step
+      //first -> update product variation stock first -> 1. saving to redis 2. after 10 minutes, save to the database
       //insert order to db - using Job Queue avoid crash server
     } catch (err) {
+      this.logger.error(err);
       throw new BadRequestException({ message: ORDER_MESSAGE.CREATE.FAILED });
     }
   }

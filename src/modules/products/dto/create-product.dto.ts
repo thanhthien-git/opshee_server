@@ -1,4 +1,4 @@
-import { ModelItem } from '../schemes/product-variation.scheme';
+import { VariationDetail } from '../schemes/product-variation.scheme';
 import { ProductAtribute, ProductVariation } from '../types/product.type';
 
 export class ProductAttributeDto {
@@ -8,7 +8,7 @@ export class ProductAttributeDto {
   productBrandId: number;
   productAttributes: ProductAtribute[];
   productVariationList: ProductVariation[];
-  variation: ModelItem[];
+  variation: VariationDetail[];
 }
 
 export class CreateProductDto extends ProductAttributeDto {

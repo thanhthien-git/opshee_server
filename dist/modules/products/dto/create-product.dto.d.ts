@@ -1,4 +1,4 @@
-import { ModelItem } from '../schemes/product-variation.scheme';
+import { VariationDetail } from '../schemes/product-variation.scheme';
 import { ProductAtribute, ProductVariation } from '../types/product.type';
 export declare class ProductAttributeDto {
     productId?: string;
@@ -7,7 +7,7 @@ export declare class ProductAttributeDto {
     productBrandId: number;
     productAttributes: ProductAtribute[];
     productVariationList: ProductVariation[];
-    variation: ModelItem[];
+    variation: VariationDetail[];
 }
 export declare class CreateProductDto extends ProductAttributeDto {
     productImages: Express.Multer.File[];

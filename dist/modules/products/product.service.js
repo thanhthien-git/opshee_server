@@ -23,9 +23,9 @@ const product_variation_scheme_1 = require("./schemes/product-variation.scheme")
 const mongodb_1 = require("mongodb");
 const redis_service_1 = require("../redis/redis/redis.service");
 let ProductService = ProductService_1 = class ProductService {
-    constructor(productModel, productItem, cloudinaryService, redisService) {
+    constructor(productModel, productVariation, cloudinaryService, redisService) {
         this.productModel = productModel;
-        this.productItem = productItem;
+        this.productVariation = productVariation;
         this.cloudinaryService = cloudinaryService;
         this.redisService = redisService;
         this.logger = new common_1.Logger(ProductService_1.name);
@@ -48,12 +48,13 @@ let ProductService = ProductService_1 = class ProductService {
     async getProductVariation(ids) {
         try {
             const objIds = this.stringToObjects(ids);
-            const variations = await this.productItem.find({
+            const variations = await this.productVariation.find({
                 _id: { $in: objIds },
-                isDeleted: false,
             });
             void Promise.all(variations.map((variation) => this.redisService
-                .set(`product:variation:${variation._id}`, variation)
+                .set(`product:variation:${variation._id}`, variation).then(() => {
+                console.log(`set to the redis value ${variation._id}`);
+            })
                 .catch((err) => console.error('Cache error:', err))));
             return variations;
         }
@@ -66,16 +67,13 @@ let ProductService = ProductService_1 = class ProductService {
         try {
             const productId = new mongoose_2.default.Types.ObjectId();
             const variations = variation.map((item) => {
-                if (!item.tier_index || Number.isFinite(item.stock)) {
-                    throw new common_1.BadRequestException('Invalid variation data');
-                }
                 return {
                     _id: new mongoose_2.default.Types.ObjectId(),
                     product_id: productId,
                     variation_details: item,
                 };
             });
-            const productItemRequest = await this.productItem.insertMany(variations);
+            const productVariationRequest = await this.productVariation.insertMany(variations);
             let imageUrls = [];
             if (productImages.length === 1) {
                 imageUrls[0] = await this.cloudinaryService.uploadFile(productImages[0]);
@@ -96,13 +94,13 @@ let ProductService = ProductService_1 = class ProductService {
                     product_created_at: new Date(),
                     product_updated_at: new Date(),
                     product_condition: true,
-                    product_highest_price: highest,
-                    product_lowest_price: lowest,
+                    product_highest_price: Number(highest),
+                    product_lowest_price: Number(lowest),
                     shop_id: shopId,
                 });
                 return {
                     product: product,
-                    variation: productItemRequest,
+                    variation: productVariationRequest,
                 };
             }
             else
@@ -132,10 +130,10 @@ let ProductService = ProductService_1 = class ProductService {
             });
         const updateOperations = [product.save()];
         if (Array.isArray(modelList) && modelList.length > 0) {
-            updateOperations.push(this.productItem.findOneAndUpdate({ product_id: productId }, { $set: { model_list: modelList } }, { new: true, upsert: true }));
+            updateOperations.push(this.productVariation.findOneAndUpdate({ product_id: productId }, { $set: { model_list: modelList } }, { new: true, upsert: true }));
         }
-        const [updatedProduct, updatedProductItem] = await Promise.all(updateOperations);
-        return { updatedProduct, updatedProductItem };
+        const [updatedProduct, updatedproductVariation] = await Promise.all(updateOperations);
+        return { updatedProduct, updatedproductVariation };
     }
     async delete(productId, shopId) {
         try {
@@ -171,14 +169,14 @@ let ProductService = ProductService_1 = class ProductService {
         }
     }
     async removeVariations(productId) {
-        return await this.productItem.findOneAndDelete({
+        return await this.productVariation.findOneAndDelete({
             product_id: productId,
         });
     }
     getProductPriceRange(variations) {
         if (!variations.length)
             return null;
-        const prices = variations.map((v) => v.price);
+        const prices = variations.map((v) => Number(v.price));
         return {
             lowest: Math.min(...prices),
             highest: Math.max(...prices),
@@ -231,7 +229,7 @@ exports.ProductService = ProductService;
 exports.ProductService = ProductService = ProductService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(products_scheme_1.Product.name)),
-    __param(1, (0, mongoose_1.InjectModel)(product_variation_scheme_1.ProductModel.name)),
+    __param(1, (0, mongoose_1.InjectModel)(product_variation_scheme_1.ProductVariation.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         cloudinary_service_1.CloudinaryService,

@@ -25,7 +25,7 @@ exports.ProductModule = ProductModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: products_scheme_1.Product.name, schema: products_scheme_1.ProductSchema },
-                { name: product_variation_scheme_1.ProductModel.name, schema: product_variation_scheme_1.ProductModelSchema },
+                { name: product_variation_scheme_1.ProductVariation.name, schema: product_variation_scheme_1.ProductVariationSchema },
             ]),
             redis_module_1.RedisModule,
             cloudinary_module_1.CloudinaryModule,

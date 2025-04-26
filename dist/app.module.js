@@ -21,7 +21,9 @@ const shop_middleware_1 = require("./middlewares/auth/shop.middleware");
 const cloudinary_module_1 = require("./modules/cloudinary/cloudinary.module");
 const token_module_1 = require("./modules/token/token.module");
 const orders_module_1 = require("./modules/orders/orders.module");
-const PROTECTED_ROUTES = ['user'];
+const stocks_module_1 = require("./modules/stocks/stocks.module");
+const cart_module_1 = require("./modules/cart/cart.module");
+const PROTECTED_ROUTES = ['user', 'orders'];
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(auth_middleware_1.AuthMiddleware).forRoutes(...PROTECTED_ROUTES);
@@ -49,6 +51,8 @@ exports.AppModule = AppModule = __decorate([
             database_module_1.DatabaseModule,
             jwt_1.JwtModule,
             orders_module_1.OrdersModule,
+            stocks_module_1.StocksModule,
+            cart_module_1.CartModule,
         ],
     })
 ], AppModule);

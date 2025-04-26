@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from '../redis/redis/redis.service';
 import { InjectModel } from '@nestjs/mongoose';
 import {
-  ProductModel,
-  ProductModelDocument,
+  ProductVariation,
+  ProductVariationDocument,
 } from '../products/schemes/product-variation.scheme';
 import { Model, Types } from 'mongoose';
 import { lockey } from '../lock/constants/lockey';
@@ -15,8 +15,8 @@ export class StocksService {
   private readonly logger = new Logger(StocksService.name);
   constructor(
     private readonly redisService: RedisService,
-    @InjectModel(ProductModel.name)
-    private productVariationModel: Model<ProductModelDocument>,
+    @InjectModel(ProductVariation.name)
+    private productVariationModel: Model<ProductVariationDocument>,
   ) {
     this.lockUtil = new LockUtil(redisService);
   }

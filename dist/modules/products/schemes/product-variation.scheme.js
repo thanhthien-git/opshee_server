@@ -9,25 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductModelSchema = exports.ProductModel = void 0;
+exports.ProductVariationSchema = exports.ProductVariation = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-let ProductModel = class ProductModel {
+let ProductVariation = class ProductVariation {
 };
-exports.ProductModel = ProductModel;
+exports.ProductVariation = ProductVariation;
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], ProductModel.prototype, "_id", void 0);
+], ProductVariation.prototype, "_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
-], ProductModel.prototype, "product_id", void 0);
+], ProductVariation.prototype, "product_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Object }),
     __metadata("design:type", Object)
-], ProductModel.prototype, "variation_details", void 0);
-exports.ProductModel = ProductModel = __decorate([
-    (0, mongoose_1.Schema)({ collection: 'productmodels' })
-], ProductModel);
-exports.ProductModelSchema = mongoose_1.SchemaFactory.createForClass(ProductModel);
+], ProductVariation.prototype, "variation_details", void 0);
+exports.ProductVariation = ProductVariation = __decorate([
+    (0, mongoose_1.Schema)({ collection: 'productvariations' })
+], ProductVariation);
+exports.ProductVariationSchema = mongoose_1.SchemaFactory.createForClass(ProductVariation);

@@ -11,9 +11,9 @@ import { Product, ProductDocument } from './schemes/products.scheme';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import {
-  ModelItem,
-  ProductModel,
-  ProductModelDocument,
+  VariationDetail,
+  ProductVariation,
+  ProductVariationDocument,
 } from './schemes/product-variation.scheme';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FitlerDto } from './dto/filter-product.dto';
@@ -26,8 +26,8 @@ export class ProductService {
   private readonly logger = new Logger(ProductService.name);
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
-    @InjectModel(ProductModel.name)
-    private productItem: Model<ProductModelDocument>,
+    @InjectModel(ProductVariation.name)
+    private productVariation: Model<ProductVariationDocument>,
     private readonly cloudinaryService: CloudinaryService,
     private readonly redisService: RedisService,
   ) {}
@@ -55,17 +55,16 @@ export class ProductService {
   async getProductVariation(ids: string[]) {
     try {
       const objIds = this.stringToObjects(ids);
-
-      const variations = await this.productItem.find({
+      const variations = await this.productVariation.find({
         _id: { $in: objIds },
-        isDeleted: false,
       });
 
       //avoid blocking
       void Promise.all(
         variations.map((variation) =>
           this.redisService
-            .set(`product:variation:${variation._id}`, variation)
+            .set(`product:variation:${variation._id}`, variation).then(() => {console.log(`set to the redis value ${variation._id}`);
+            })
             .catch((err) => console.error('Cache error:', err)),
         ),
       );
@@ -90,10 +89,7 @@ export class ProductService {
     try {
       const productId = new mongoose.Types.ObjectId();
       //STEP 1: CREATE VARIATION
-      const variations: ProductModel[] = variation.map((item) => {
-        if (!item.tier_index || Number.isFinite(item.stock)) {
-          throw new BadRequestException('Invalid variation data');
-        }
+      const variations: ProductVariation[] = variation.map((item) => {
         return {
           _id: new mongoose.Types.ObjectId(),
           product_id: productId,
@@ -101,7 +97,8 @@ export class ProductService {
         };
       });
       //---define product data include its id---
-      const productItemRequest = await this.productItem.insertMany(variations);
+      const productVariationRequest =
+        await this.productVariation.insertMany(variations);
 
       //STEP 2: create product first
       //---upload image--- : upload to storage -> assign to productImage using a string[]
@@ -126,15 +123,15 @@ export class ProductService {
           product_created_at: new Date(),
           product_updated_at: new Date(),
           product_condition: true,
-          product_highest_price: highest,
-          product_lowest_price: lowest,
+          product_highest_price: Number(highest),
+          product_lowest_price: Number(lowest),
           shop_id: shopId,
         }); // WORK
 
         //STEP 3: return the respone
         return {
           product: product,
-          variation: productItemRequest,
+          variation: productVariationRequest,
         };
       } else
         throw new BadRequestException({
@@ -176,7 +173,7 @@ export class ProductService {
 
     if (Array.isArray(modelList) && modelList.length > 0) {
       updateOperations.push(
-        this.productItem.findOneAndUpdate(
+        this.productVariation.findOneAndUpdate(
           { product_id: productId },
           { $set: { model_list: modelList } },
           { new: true, upsert: true },
@@ -184,10 +181,10 @@ export class ProductService {
       );
     }
 
-    const [updatedProduct, updatedProductItem] =
+    const [updatedProduct, updatedproductVariation] =
       await Promise.all(updateOperations);
 
-    return { updatedProduct, updatedProductItem };
+    return { updatedProduct, updatedproductVariation };
   }
 
   async delete(
@@ -231,15 +228,15 @@ export class ProductService {
   }
 
   async removeVariations(productId: string): Promise<Document> {
-    return await this.productItem.findOneAndDelete({
+    return await this.productVariation.findOneAndDelete({
       product_id: productId,
     });
   }
 
-  private getProductPriceRange(variations: ModelItem[]) {
+  private getProductPriceRange(variations: VariationDetail[]) {
     if (!variations.length) return null;
 
-    const prices = variations.map((v) => v.price);
+    const prices = variations.map((v) => Number(v.price));
     return {
       lowest: Math.min(...prices),
       highest: Math.max(...prices),

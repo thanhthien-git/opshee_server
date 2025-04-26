@@ -63,7 +63,7 @@ let StocksService = StocksService_1 = class StocksService {
 exports.StocksService = StocksService;
 exports.StocksService = StocksService = StocksService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(1, (0, mongoose_1.InjectModel)(product_variation_scheme_1.ProductModel.name)),
+    __param(1, (0, mongoose_1.InjectModel)(product_variation_scheme_1.ProductVariation.name)),
     __metadata("design:paramtypes", [redis_service_1.RedisService,
         mongoose_2.Model])
 ], StocksService);

@@ -16,11 +16,11 @@ import { ConfigModule } from '@nestjs/config';
 import { ShopMiddleware } from './middlewares/auth/shop.middleware';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { TokenModule } from './modules/token/token.module';
-import { OrdersService } from './modules/orders/orders.service';
-import { LockUtil } from './modules/lock/lock.service';
 import { OrdersModule } from './modules/orders/orders.module';
+import { StocksModule } from './modules/stocks/stocks.module';
+import { CartModule } from './modules/cart/cart.module';
 
-const PROTECTED_ROUTES = ['user'];
+const PROTECTED_ROUTES = ['user', 'orders'];
 @Module({
   imports: [
     //import app modules
@@ -38,6 +38,8 @@ const PROTECTED_ROUTES = ['user'];
     DatabaseModule,
     JwtModule,
     OrdersModule,
+    StocksModule,
+    CartModule,
   ],
 })
 export class AppModule implements NestModule {
