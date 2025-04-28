@@ -20,9 +20,11 @@ const cart_entity_1 = require("./entities/cart.entity");
 const typeorm_2 = require("typeorm");
 const util_1 = require("../../utils/util");
 const redis_service_1 = require("../redis/redis/redis.service");
+const cart_item_entity_1 = require("./entities/cart-item.entity");
 let CartService = CartService_1 = class CartService {
-    constructor(cartRepository, redisService) {
+    constructor(cartRepository, cartItemRepitory, redisService) {
         this.cartRepository = cartRepository;
+        this.cartItemRepitory = cartItemRepitory;
         this.redisService = redisService;
         this.logger = new common_1.Logger(CartService_1.name);
         this.CART_CACHE_KEY = (key) => `cartId:${key}`;
@@ -41,12 +43,14 @@ let CartService = CartService_1 = class CartService {
             throw new common_1.BadRequestException(err);
         }
     }
-    async getCart(userId) {
+    async getCart(userId, cartId) {
         try {
-            const cacheKey = this.CART_CACHE_KEY(String(userId));
+            let key = userId ? userId : cartId;
+            let query = userId ? { user_id: userId } : { id: cartId };
+            const cacheKey = this.CART_CACHE_KEY(String(key));
             return this.redisService.checkCacheMemo(cacheKey, async () => {
                 return await this.cartRepository.findOne({
-                    where: { user_id: userId },
+                    where: query,
                     relations: ['cart_item'],
                 });
             });
@@ -56,11 +60,95 @@ let CartService = CartService_1 = class CartService {
             throw new common_1.BadRequestException(err);
         }
     }
+    isExistInCart(cartItems, checkItem) {
+        const item = cartItems.find((item) => item.product_variation_id === checkItem);
+        return item;
+    }
+    async updateCartQuantity(cartId, quantity) {
+        return await this.cartRepository.update({ id: cartId }, {
+            item_count: quantity,
+        });
+    }
+    async addToCart(dto, userId) {
+        try {
+            const { productId, productVaritionId, quantity } = dto;
+            let currentCart = await this.getCart(userId);
+            let { id, item_count } = currentCart;
+            item_count += quantity;
+            let cartItem = this.isExistInCart(currentCart.cart_items, String(productVaritionId));
+            if (cartItem) {
+                cartItem.quantity += quantity;
+                await Promise.all([
+                    this.updateCartItem(cartItem),
+                    this.updateCartQuantity(id, item_count),
+                ]);
+                return common_1.HttpStatus.ACCEPTED;
+            }
+            cartItem = {
+                cart_id: id,
+                product_id: productId,
+                product_variation_id: productVaritionId,
+                quantity: quantity,
+                item_create_at: new Date(),
+                item_update_at: new Date(),
+                id: util_1.Utils.generateBigInt(),
+            };
+            await Promise.all([
+                this.addCartItem(cartItem),
+                this.updateCartQuantity(id, item_count),
+            ]);
+            return common_1.HttpStatus.ACCEPTED;
+        }
+        catch (err) {
+            this.logger.error(`error when add to cart : ${err}`);
+            throw new common_1.BadRequestException(err);
+        }
+    }
+    async removeCartItem(ids, cartId) {
+        try {
+            let cart = await this.getCart(null, cartId);
+            for (const item of cart.cart_items) {
+                if (ids.includes(item.cart_id)) {
+                    cart.item_count -= item.quantity;
+                }
+            }
+            await Promise.all([
+                this.cartItemRepitory.delete({
+                    id: (0, typeorm_2.In)(ids),
+                }),
+                this.updateCartQuantity(cartId, cart.item_count),
+            ]);
+            return common_1.HttpStatus.ACCEPTED;
+        }
+        catch (err) {
+            this.logger.error(`Error while remove product from cart`);
+            throw new common_1.BadRequestException(err);
+        }
+    }
+    async addCartItem(item) {
+        try {
+            return await this.cartItemRepitory.insert(item);
+        }
+        catch (err) {
+            this.logger.error(`error while add cart item : ${err}`);
+            throw new common_1.BadRequestException(err);
+        }
+    }
+    async updateCartItem(cartItem) {
+        return await this.cartItemRepitory.update({ id: cartItem.id }, { quantity: cartItem.quantity });
+    }
+    async getCartItem(cartItemId) {
+        return await this.cartItemRepitory.findOne({
+            where: { id: cartItemId },
+        });
+    }
 };
 exports.CartService = CartService;
 exports.CartService = CartService = CartService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(cart_entity_1.CartEntity)),
+    __param(1, (0, typeorm_1.InjectRepository)(cart_item_entity_1.CartItemEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         redis_service_1.RedisService])
 ], CartService);

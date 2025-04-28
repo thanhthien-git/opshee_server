@@ -5,7 +5,9 @@ import { LoginDto } from './dto/sign-in/login.dto';
 import { ValidateDto } from './dto/sign-up/validate.dto';
 import { SignUpDto } from './dto/sign-up/sigu-up.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -33,7 +35,7 @@ export class AuthController {
   //#region : Forgot password - Reset password
   @Post('forgot-password')
   async requestForgotPassword(@Body() data: ForgotPasswordDto) {
-    return data
+    return data;
   }
   //#endregion
 }

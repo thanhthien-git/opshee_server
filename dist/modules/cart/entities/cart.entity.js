@@ -32,6 +32,10 @@ __decorate([
     __metadata("design:type", Date)
 ], CartEntity.prototype, "update_at", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'integer' }),
+    __metadata("design:type", Number)
+], CartEntity.prototype, "item_count", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => cart_item_entity_1.CartItemEntity, (item) => item.cart),
     __metadata("design:type", Array)
 ], CartEntity.prototype, "cart_items", void 0);

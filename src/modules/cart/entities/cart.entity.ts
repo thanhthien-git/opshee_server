@@ -22,6 +22,9 @@ export class CartEntity {
   })
   update_at: Date;
 
+  @Column({ type: 'integer' })
+  item_count: number;
+
   @OneToMany(() => CartItemEntity, (item) => item.cart)
   cart_items?: CartItemEntity[];
 }

@@ -12,26 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddToCartDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-const mongoose_1 = require("mongoose");
 class AddToCartDto {
 }
 exports.AddToCartDto = AddToCartDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(String(value))),
-    __metadata("design:type", mongoose_1.Types.ObjectId)
+    __metadata("design:type", String)
 ], AddToCartDto.prototype, "productId", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_transformer_1.Transform)(({ value }) => BigInt(value)),
-    __metadata("design:type", BigInt)
-], AddToCartDto.prototype, "shopId", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_transformer_1.Transform)(({ value }) => new mongoose_1.Types.ObjectId(String(value))),
-    __metadata("design:type", mongoose_1.Types.ObjectId)
+    __metadata("design:type", String)
 ], AddToCartDto.prototype, "productVaritionId", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Transform)(({ value }) => Number(value)),
     __metadata("design:type", Number)
-], AddToCartDto.prototype, "stock", void 0);
+], AddToCartDto.prototype, "quantity", void 0);

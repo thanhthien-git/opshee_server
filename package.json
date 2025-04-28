@@ -28,6 +28,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^11.0.11",
     "@nestjs/serve-static": "^2.2.2",
+    "@nestjs/swagger": "^11.1.5",
     "@nestjs/typeorm": "^10.0.2",
     "@redis/client": "^1.6.0",
     "bcrypt": "^5.1.1",

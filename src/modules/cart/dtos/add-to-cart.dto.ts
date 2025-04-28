@@ -1,20 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Types } from 'mongoose';
 
 export class AddToCartDto {
   @IsNotEmpty()
-  @Transform(({ value }) => new Types.ObjectId(String(value)))
-  productId: Types.ObjectId;
+  productId: string;
 
   @IsNotEmpty()
-  @Transform(({ value }) => BigInt(value))
-  shopId: bigint;
+  productVaritionId: string;
 
   @IsNotEmpty()
-  @Transform(({ value }) => new Types.ObjectId(String(value)))
-  productVaritionId: Types.ObjectId;
-
-  @IsNotEmpty()
-  stock: number;
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
+  quantity: number;
 }

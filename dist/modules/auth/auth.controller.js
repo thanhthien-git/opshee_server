@@ -20,6 +20,7 @@ const login_dto_1 = require("./dto/sign-in/login.dto");
 const validate_dto_1 = require("./dto/sign-up/validate.dto");
 const sigu_up_dto_1 = require("./dto/sign-up/sigu-up.dto");
 const forgot_password_dto_1 = require("./dto/forgot-password.dto");
+const swagger_1 = require("@nestjs/swagger");
 let AuthController = class AuthController {
     constructor(signInService, signUpService) {
         this.signInService = signInService;
@@ -68,6 +69,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestForgotPassword", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [sign_in_service_1.SignInService,
         sign_up_service_1.SignUpService])
