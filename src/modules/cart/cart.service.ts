@@ -11,8 +11,6 @@ import { Utils } from '../../utils/util';
 import { RedisService } from '../redis/redis/redis.service';
 import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { CartItemEntity } from './entities/cart-item.entity';
-import { AddCartItemDto } from './dtos/add-cart-item.dto';
-import { StocksService } from '../stocks/stocks.service';
 
 @Injectable()
 export class CartService {

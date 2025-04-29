@@ -6,7 +6,7 @@ import {
   ProductSchema,
 } from '../../modules/products/schemes/products.scheme';
 import { RedisModule } from '../redis/redis/redis.module';
-import { RedisService } from '../redis/redis/redis.service';
+import {  } from '../redis/redis/redis.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import {
@@ -24,7 +24,7 @@ import { ProductService } from './product.service';
     CloudinaryModule,
   ],
   controllers: [ProductController],
-  providers: [ProductService, RedisService, CloudinaryService],
+  providers: [ProductService, CloudinaryService],
   exports: [ProductService],
 })
 export class ProductModule {}
