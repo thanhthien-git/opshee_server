@@ -27,7 +27,8 @@ export class CartService {
 
     private redisService: RedisService,
   ) {}
-  private async createCart(userId: number): Promise<InsertResult> {
+
+  async createCart(userId: number): Promise<InsertResult> {
     try {
       const id = Utils.generateBigInt();
       return await this.cartRepository.insert({

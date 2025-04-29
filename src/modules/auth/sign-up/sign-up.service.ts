@@ -6,12 +6,16 @@ import { SignUpDto } from '../dto/sign-up/sigu-up.dto';
 import { ERROR_AUTH, NOTIFY } from '../../../constants/message';
 import { ValidateDto } from '../dto/sign-up/validate.dto';
 import { BcryptService } from '../../../modules/bcrypt/brcypt.service';
+import { CartService } from 'src/modules/cart/cart.service';
 
 @Injectable()
 export class SignUpService {
+  constructor(
   @InjectRepository(UserEntity)
-  private userRepository: Repository<UserEntity>;
-
+  private userRepository: Repository<UserEntity>,
+  
+  private cartService: CartService
+  ){}
   async checkIsExist(validateDto: ValidateDto) {
     const user = await this.userRepository.findOne({
       where: [
@@ -63,6 +67,9 @@ export class SignUpService {
 
     const user = this.userRepository.create(createRequest);
     await this.userRepository.save(user);
+
+    await this.cartService.createCart(user.user_id)
+
     return {
       message: NOTIFY.SIGN_UP_SUCCESS,
     };

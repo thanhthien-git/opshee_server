@@ -19,6 +19,7 @@ const role_guard_1 = require("../../guards/role/role.guard");
 const message_1 = require("../../constants/message");
 const regex_1 = require("../../constants/regex");
 const update_info_dto_1 = require("./dto/update-info.dto");
+const swagger_1 = require("@nestjs/swagger");
 let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
@@ -46,6 +47,7 @@ let UsersController = class UsersController {
 exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)('/me'),
+    (0, swagger_1.ApiBearerAuth)('access-token'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -53,6 +55,16 @@ __decorate([
 ], UsersController.prototype, "getById", null);
 __decorate([
     (0, common_1.Patch)('/change-password'),
+    (0, swagger_1.ApiBearerAuth)('access-token'),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                newPassword: { type: 'string', example: 'myNewPassword123' },
+            },
+            required: ['newPassword'],
+        },
+    }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)('newPassword')),
     __metadata("design:type", Function),
@@ -61,6 +73,8 @@ __decorate([
 ], UsersController.prototype, "changePassword", null);
 __decorate([
     (0, common_1.Patch)('/update-user'),
+    (0, swagger_1.ApiBearerAuth)('access-token'),
+    (0, swagger_1.ApiBody)({ type: update_info_dto_1.UpdateInfoDto }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

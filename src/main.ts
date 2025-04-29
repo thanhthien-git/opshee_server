@@ -20,11 +20,19 @@ async function bootstrap() {
     .setTitle('OPSHEE API')
     .setDescription('APU documentation for Opshee E-commerce system')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger', app, document);
-  
+
   await app.listen(port, () => {
     console.log(`server is now running on port: ${port}`);
   });

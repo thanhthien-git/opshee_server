@@ -23,6 +23,7 @@ import {
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductOwnerShipGuard } from './guard/product_owner.guard';
 import { ProductService } from './product.service';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('product')
 export class ProductController {
@@ -31,6 +32,11 @@ export class ProductController {
     private readonly storageService: CloudinaryService,
   ) {}
 
+  @ApiQuery({
+    name: 'id',
+    required: true,
+    description: 'The ID of the product',
+  })
   @Get()
   async getProductById(@Query('id') id: string) {
     return await this.productService.getProductById(id);

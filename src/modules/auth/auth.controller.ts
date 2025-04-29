@@ -5,7 +5,7 @@ import { LoginDto } from './dto/sign-in/login.dto';
 import { ValidateDto } from './dto/sign-up/validate.dto';
 import { SignUpDto } from './dto/sign-up/sigu-up.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -16,6 +16,7 @@ export class AuthController {
   ) {}
   //#region : Login Controller
   @Post('login')
+  @ApiBody({ type: LoginDto })
   async signIn(@Body() loginDto: LoginDto) {
     return this.signInService.login(loginDto);
   }
@@ -23,10 +24,12 @@ export class AuthController {
 
   //#region : Sign Up Controller
   @Post('verify-phone')
+  @ApiBody({ type: ValidateDto })
   async verifyPhone(@Body() validateData: ValidateDto) {
     return this.signUpService.checkIsExist(validateData);
   }
   @Post('sign-up')
+  @ApiBody({ type: SignUpDto })
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.signUpService.signUp(signUpDto);
   }
@@ -34,6 +37,7 @@ export class AuthController {
 
   //#region : Forgot password - Reset password
   @Post('forgot-password')
+  @ApiBody({ type: ForgotPasswordDto })
   async requestForgotPassword(@Body() data: ForgotPasswordDto) {
     return data;
   }

@@ -18,12 +18,13 @@ const users_service_1 = require("../users/users.service");
 const brcypt_service_1 = require("../bcrypt/brcypt.service");
 const token_service_1 = require("../token/token.service");
 const token_module_1 = require("../token/token.module");
+const cart_module_1 = require("../cart/cart.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]), token_module_1.TokenModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]), token_module_1.TokenModule, cart_module_1.CartModule],
         controllers: [auth_controller_1.AuthController],
         providers: [
             sign_in_service_1.SignInService,

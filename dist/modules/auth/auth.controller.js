@@ -42,6 +42,7 @@ let AuthController = class AuthController {
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('login'),
+    (0, swagger_1.ApiBody)({ type: login_dto_1.LoginDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
@@ -49,6 +50,7 @@ __decorate([
 ], AuthController.prototype, "signIn", null);
 __decorate([
     (0, common_1.Post)('verify-phone'),
+    (0, swagger_1.ApiBody)({ type: validate_dto_1.ValidateDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [validate_dto_1.ValidateDto]),
@@ -56,6 +58,7 @@ __decorate([
 ], AuthController.prototype, "verifyPhone", null);
 __decorate([
     (0, common_1.Post)('sign-up'),
+    (0, swagger_1.ApiBody)({ type: sigu_up_dto_1.SignUpDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [sigu_up_dto_1.SignUpDto]),
@@ -63,6 +66,7 @@ __decorate([
 ], AuthController.prototype, "signUp", null);
 __decorate([
     (0, common_1.Post)('forgot-password'),
+    (0, swagger_1.ApiBody)({ type: forgot_password_dto_1.ForgotPasswordDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [forgot_password_dto_1.ForgotPasswordDto]),

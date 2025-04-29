@@ -9,9 +9,10 @@ import { UsersService } from '../users/users.service';
 import { BcryptService } from '../bcrypt/brcypt.service';
 import { TokenService } from '../token/token.service';
 import { TokenModule } from '../token/token.module';
+import { CartModule } from '../cart/cart.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), TokenModule],
+  imports: [TypeOrmModule.forFeature([UserEntity]), TokenModule, CartModule],
   controllers: [AuthController],
   providers: [
     SignInService,

@@ -21,6 +21,7 @@ const role_enum_1 = require("../../enum/role.enum");
 const role_decorators_1 = require("../../decorators/role.decorators");
 const product_owner_guard_1 = require("./guard/product_owner.guard");
 const product_service_1 = require("./product.service");
+const swagger_1 = require("@nestjs/swagger");
 let ProductController = class ProductController {
     constructor(productService, storageService) {
         this.productService = productService;
@@ -58,6 +59,11 @@ let ProductController = class ProductController {
 };
 exports.ProductController = ProductController;
 __decorate([
+    (0, swagger_1.ApiQuery)({
+        name: 'id',
+        required: true,
+        description: 'The ID of the product',
+    }),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('id')),
     __metadata("design:type", Function),

@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SignUpService = void 0;
 const common_1 = require("@nestjs/common");
@@ -16,7 +19,12 @@ const user_entity_1 = require("../../../models/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const message_1 = require("../../../constants/message");
 const brcypt_service_1 = require("../../../modules/bcrypt/brcypt.service");
+const cart_service_1 = require("../../cart/cart.service");
 let SignUpService = class SignUpService {
+    constructor(userRepository, cartService) {
+        this.userRepository = userRepository;
+        this.cartService = cartService;
+    }
     async checkIsExist(validateDto) {
         const user = await this.userRepository.findOne({
             where: [
@@ -64,16 +72,16 @@ let SignUpService = class SignUpService {
         };
         const user = this.userRepository.create(createRequest);
         await this.userRepository.save(user);
+        await this.cartService.createCart(user.user_id);
         return {
             message: message_1.NOTIFY.SIGN_UP_SUCCESS,
         };
     }
 };
 exports.SignUpService = SignUpService;
-__decorate([
-    (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity),
-    __metadata("design:type", typeorm_2.Repository)
-], SignUpService.prototype, "userRepository", void 0);
 exports.SignUpService = SignUpService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        cart_service_1.CartService])
 ], SignUpService);
