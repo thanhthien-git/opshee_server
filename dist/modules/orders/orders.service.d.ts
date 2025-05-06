@@ -19,10 +19,11 @@ export declare class OrdersService {
     private ORDER_CACHE_KEY;
     private validateItem;
     private createOrderDetails;
-    create(dto: CreateOrderDto, userId: number): Promise<void>;
-    getById(orderId: string): Promise<Order>;
+    create(dto: CreateOrderDto, userId: number, isPuscharge?: boolean): Promise<void>;
+    getById(orderId: string, userId?: number): Promise<Order>;
     getOrderByUser(userId: number): Promise<Order[]>;
     getOrderByShop(shopId: string): Promise<OrderItemEntity[]>;
     updateOrderStatus(orderId: string, status: keyof typeof ORDER_STATUS): Promise<UpdateResult>;
-    cancelOrder(orderId: string): Promise<UpdateResult>;
+    cancelOrder(orderId: bigint): Promise<UpdateResult>;
+    isPuscharge(productId: string, userId: number): Promise<boolean>;
 }

@@ -46,7 +46,7 @@ let OrdersService = OrdersService_1 = class OrdersService {
         }
         return itemInStock;
     }
-    async createOrderDetails(products, userId) {
+    async createOrderDetails(products, userId, isPuscharge = false) {
         try {
             let orderItems = [];
             let totalPrice = 0;
@@ -61,6 +61,7 @@ let OrdersService = OrdersService_1 = class OrdersService {
                 const { tier_index, price } = variations[i].variation_details;
                 let itemPrice = price * quantity;
                 let item = {
+                    user_id: userId,
                     order_item_id: util_1.Utils.generateBigInt(),
                     order_item_price: itemPrice,
                     order_item_quantity: inStock,
@@ -80,6 +81,7 @@ let OrdersService = OrdersService_1 = class OrdersService {
                 user_id: userId,
                 order_create_at: new Date(),
                 order_update_at: new Date(),
+                is_puscharge: isPuscharge,
             };
             return { order, orderItems };
         }
@@ -88,25 +90,28 @@ let OrdersService = OrdersService_1 = class OrdersService {
             throw new common_1.BadRequestException(err);
         }
     }
-    async create(dto, userId) {
+    async create(dto, userId, isPuscharge = false) {
         try {
             const { products, expressType, userAddress, paidType } = dto;
             let orderId = util_1.Utils.generateBigInt();
             this.context.setOrderId(orderId);
-            const { order, orderItems } = await this.createOrderDetails(products, userId);
+            const { order, orderItems } = await this.createOrderDetails(products, userId, isPuscharge);
         }
         catch (err) {
             this.logger.error(err);
             throw new common_1.BadRequestException({ message: message_1.ORDER_MESSAGE.CREATE.FAILED });
         }
     }
-    async getById(orderId) {
+    async getById(orderId, userId) {
         try {
             const cacheKey = this.ORDER_CACHE_KEY(orderId);
             const id = BigInt(orderId);
+            const query = userId
+                ? { order_id: id, user_id: userId }
+                : { order_id: id };
             const order = await this.redisService.checkCacheMemo(cacheKey, async () => {
                 return await this.orderReposity.findOne({
-                    where: { order_id: id },
+                    where: { ...query },
                     relations: ['order_items'],
                 });
             }, new order_entity_1.Order());
@@ -170,6 +175,18 @@ let OrdersService = OrdersService_1 = class OrdersService {
         }
         catch (err) {
             this.logger.error(`Error while cancel orderId: ${orderId}`);
+            throw new Error(err);
+        }
+    }
+    async isPuscharge(productId, userId) {
+        try {
+            const order = await this.orderItemRepository.findOne({
+                where: { user_id: userId, product_id: productId },
+            });
+            return !!order;
+        }
+        catch (err) {
+            this.logger.error(`Error while checking is purcharge :${productId} - user: ${userId}`);
             throw new Error(err);
         }
     }

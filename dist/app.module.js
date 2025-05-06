@@ -23,7 +23,8 @@ const token_module_1 = require("./modules/token/token.module");
 const orders_module_1 = require("./modules/orders/orders.module");
 const stocks_module_1 = require("./modules/stocks/stocks.module");
 const cart_module_1 = require("./modules/cart/cart.module");
-const PROTECTED_ROUTES = ['user', 'orders'];
+const comments_service_1 = require("./modules/comments/comments.service");
+const PROTECTED_ROUTES = ['user', 'orders', 'cart', 'comments'];
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(auth_middleware_1.AuthMiddleware).forRoutes(...PROTECTED_ROUTES);
@@ -53,6 +54,7 @@ exports.AppModule = AppModule = __decorate([
             orders_module_1.OrdersModule,
             stocks_module_1.StocksModule,
             cart_module_1.CartModule,
+            comments_service_1.CommentsService,
         ],
     })
 ], AppModule);

@@ -19,8 +19,9 @@ import { TokenModule } from './modules/token/token.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { StocksModule } from './modules/stocks/stocks.module';
 import { CartModule } from './modules/cart/cart.module';
+import { CommentsService } from './modules/comments/comments.service';
 
-const PROTECTED_ROUTES = ['user', 'orders'];
+const PROTECTED_ROUTES = ['user', 'orders', 'cart', 'comments'];
 @Module({
   imports: [
     //import app modules
@@ -40,6 +41,7 @@ const PROTECTED_ROUTES = ['user', 'orders'];
     OrdersModule,
     StocksModule,
     CartModule,
+    CommentsService,
   ],
 })
 export class AppModule implements NestModule {

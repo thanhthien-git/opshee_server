@@ -49,6 +49,10 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "order_status", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Boolean)
+], Order.prototype, "is_puscharge", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.UserEntity, (user) => user.orders, { onDelete: 'SET NULL' }),
     __metadata("design:type", user_entity_1.UserEntity)
 ], Order.prototype, "user", void 0);

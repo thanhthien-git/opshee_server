@@ -37,6 +37,9 @@ export class Order {
   @Column()
   order_status: string;
 
+  @Column()
+  is_puscharge: boolean
+
   @ManyToOne(() => UserEntity, (user) => user.orders, { onDelete: 'SET NULL' })
   user?: UserEntity;
 

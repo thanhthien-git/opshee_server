@@ -15,12 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CartController = void 0;
 const common_1 = require("@nestjs/common");
 const add_to_cart_dto_1 = require("./dtos/add-to-cart.dto");
+const cart_service_1 = require("./cart.service");
+const update_cart_dto_1 = require("./dtos/update-cart.dto");
+const remove_cart_item_dto_1 = require("./dtos/remove-cart-item.dto");
 let CartController = class CartController {
+    constructor(cartService) {
+        this.cartService = cartService;
+    }
     async getCart(req) {
-        return `getting cart...`;
+        const userId = req.userId;
+        return await this.cartService.getCart(userId);
     }
     async addToCart(dto, req) {
-        return `add to cart`;
+        const userId = req.userId;
+        return await this.cartService.addToCart(dto, userId);
+    }
+    async updateCartItem(dto) {
+        return await this.cartService.updateCartItem(dto);
+    }
+    async removeCartItem(dto) {
+        const { ids, cartId } = dto;
+        return await this.cartService.removeCartItem(ids, cartId);
     }
 };
 exports.CartController = CartController;
@@ -32,13 +47,28 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "getCart", null);
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('add'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [add_to_cart_dto_1.AddToCartDto, Object]),
     __metadata("design:returntype", Promise)
 ], CartController.prototype, "addToCart", null);
+__decorate([
+    (0, common_1.Patch)('update'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_cart_dto_1.UpdateCartItemDto]),
+    __metadata("design:returntype", Promise)
+], CartController.prototype, "updateCartItem", null);
+__decorate([
+    (0, common_1.Delete)('removeItem'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [remove_cart_item_dto_1.RemoveCartItemDto]),
+    __metadata("design:returntype", Promise)
+], CartController.prototype, "removeCartItem", null);
 exports.CartController = CartController = __decorate([
-    (0, common_1.Controller)('cart')
+    (0, common_1.Controller)('cart'),
+    __metadata("design:paramtypes", [cart_service_1.CartService])
 ], CartController);

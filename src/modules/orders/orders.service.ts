@@ -43,6 +43,7 @@ export class OrdersService {
   private async createOrderDetails(
     products: IOrderItem[],
     userId: number,
+    isPuscharge = false,
   ): Promise<{ order: Order; orderItems: OrderItemEntity[] }> {
     try {
       let orderItems: OrderItemEntity[] = [];
@@ -62,6 +63,7 @@ export class OrdersService {
         let itemPrice = price * quantity;
         //create details of order items
         let item: OrderItemEntity = {
+          user_id: userId,
           order_item_id: Utils.generateBigInt(),
           order_item_price: itemPrice,
           order_item_quantity: inStock,
@@ -84,6 +86,7 @@ export class OrdersService {
         user_id: userId,
         order_create_at: new Date(),
         order_update_at: new Date(),
+        is_puscharge: isPuscharge,
       };
 
       //return order & order items
@@ -94,7 +97,7 @@ export class OrdersService {
     }
   }
 
-  async create(dto: CreateOrderDto, userId: number) {
+  async create(dto: CreateOrderDto, userId: number, isPuscharge = false) {
     try {
       const { products, expressType, userAddress, paidType } = dto;
       let orderId = Utils.generateBigInt();
@@ -103,6 +106,7 @@ export class OrdersService {
       const { order, orderItems } = await this.createOrderDetails(
         products,
         userId,
+        isPuscharge,
       );
       //add to the db step
       //first -> update product variation stock first -> 1. saving to redis 2. after 10 minutes, save to the database
@@ -113,15 +117,18 @@ export class OrdersService {
     }
   }
 
-  async getById(orderId: string): Promise<Order> {
+  async getById(orderId: string, userId?: number): Promise<Order> {
     try {
       const cacheKey = this.ORDER_CACHE_KEY(orderId);
       const id = BigInt(orderId);
+      const query = userId
+        ? { order_id: id, user_id: userId }
+        : { order_id: id };
       const order = await this.redisService.checkCacheMemo(
         cacheKey,
         async () => {
           return await this.orderReposity.findOne({
-            where: { order_id: id },
+            where: { ...query },
             relations: ['order_items'],
           });
         },
@@ -190,7 +197,7 @@ export class OrdersService {
     }
   }
 
-  async cancelOrder(orderId: string): Promise<UpdateResult> {
+  async cancelOrder(orderId: bigint): Promise<UpdateResult> {
     try {
       return await this.orderReposity.update(
         {
@@ -202,6 +209,20 @@ export class OrdersService {
       );
     } catch (err) {
       this.logger.error(`Error while cancel orderId: ${orderId}`);
+      throw new Error(err);
+    }
+  }
+
+  async isPuscharge(productId: string, userId: number): Promise<boolean> {
+    try {
+      const order = await this.orderItemRepository.findOne({
+        where: { user_id: userId, product_id: productId },
+      });
+      return !!order;
+    } catch (err) {
+      this.logger.error(
+        `Error while checking is purcharge :${productId} - user: ${userId}`,
+      );
       throw new Error(err);
     }
   }

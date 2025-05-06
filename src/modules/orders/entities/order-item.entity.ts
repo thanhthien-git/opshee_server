@@ -23,6 +23,9 @@ export class OrderItemEntity {
   order_item_price: number;
 
   @Column()
+  user_id: number;
+
+  @Column()
   shop_id: number;
 
   @ManyToOne(() => Order, (order) => order.order_items, {

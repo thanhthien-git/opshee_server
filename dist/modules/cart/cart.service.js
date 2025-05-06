@@ -79,7 +79,10 @@ let CartService = CartService_1 = class CartService {
             if (cartItem) {
                 cartItem.quantity += quantity;
                 await Promise.all([
-                    this.updateCartItem(cartItem),
+                    this.updateCartItem({
+                        cartItemId: cartItem.id,
+                        quantity: cartItem.quantity,
+                    }),
                     this.updateCartQuantity(id, item_count),
                 ]);
                 return common_1.HttpStatus.ACCEPTED;
@@ -134,8 +137,8 @@ let CartService = CartService_1 = class CartService {
             throw new common_1.BadRequestException(err);
         }
     }
-    async updateCartItem(cartItem) {
-        return await this.cartItemRepitory.update({ id: cartItem.id }, { quantity: cartItem.quantity });
+    async updateCartItem(dto) {
+        return await this.cartItemRepitory.update({ id: dto.cartItemId }, { quantity: dto.quantity });
     }
     async getCartItem(cartItemId) {
         return await this.cartItemRepitory.findOne({

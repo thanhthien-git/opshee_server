@@ -4,6 +4,7 @@ import { InsertResult, Repository } from 'typeorm';
 import { RedisService } from '../redis/redis/redis.service';
 import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { CartItemEntity } from './entities/cart-item.entity';
+import { UpdateCartItemDto } from './dtos/update-cart.dto';
 export declare class CartService {
     private cartRepository;
     private cartItemRepitory;
@@ -18,6 +19,6 @@ export declare class CartService {
     addToCart(dto: AddToCartDto, userId: number): Promise<HttpStatus>;
     removeCartItem(ids: bigint[], cartId: bigint): Promise<HttpStatus>;
     private addCartItem;
-    updateCartItem(cartItem: CartItemEntity): Promise<import("typeorm").UpdateResult>;
+    updateCartItem(dto: UpdateCartItemDto): Promise<import("typeorm").UpdateResult>;
     private getCartItem;
 }

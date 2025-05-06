@@ -7,6 +7,7 @@ export declare class OrderItemEntity {
     product_name: string;
     order_item_quantity: number;
     order_item_price: number;
+    user_id: number;
     shop_id: number;
     order?: Order;
     shop?: ShopEntity;

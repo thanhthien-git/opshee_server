@@ -43,6 +43,10 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
+], OrderItemEntity.prototype, "user_id", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
 ], OrderItemEntity.prototype, "shop_id", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => order_entity_1.Order, (order) => order.order_items, {
