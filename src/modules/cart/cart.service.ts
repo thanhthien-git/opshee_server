@@ -11,6 +11,7 @@ import { Utils } from '../../utils/util';
 import { RedisService } from '../redis/redis/redis.service';
 import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { CartItemEntity } from './entities/cart-item.entity';
+import { UpdateCartItemDto } from './dtos/update-cart.dto';
 
 @Injectable()
 export class CartService {
@@ -91,7 +92,10 @@ export class CartService {
       if (cartItem) {
         cartItem.quantity += quantity;
         await Promise.all([
-          this.updateCartItem(cartItem),
+          this.updateCartItem({
+            cartItemId: cartItem.id,
+            quantity: cartItem.quantity,
+          }),
           this.updateCartQuantity(id, item_count),
         ]);
 
@@ -151,10 +155,10 @@ export class CartService {
       throw new BadRequestException(err);
     }
   }
-  async updateCartItem(cartItem: CartItemEntity) {
+  async updateCartItem(dto: UpdateCartItemDto) {
     return await this.cartItemRepitory.update(
-      { id: cartItem.id },
-      { quantity: cartItem.quantity },
+      { id: dto.cartItemId },
+      { quantity: dto.quantity },
     );
   }
   private async getCartItem(cartItemId: bigint): Promise<CartItemEntity> {
