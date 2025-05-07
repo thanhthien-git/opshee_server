@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DeleteResult, Model, Types } from 'mongoose';
-import { CommentDocument, IComment } from './shema/comment.schema';
+import { CommentDocument, IComment, Comment } from './shema/comment.schema';
 import { PostCommentDto } from './dtos/create-comment.dto';
 
 @Injectable()

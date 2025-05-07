@@ -17,6 +17,7 @@ exports.CommentsService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const comment_schema_1 = require("./shema/comment.schema");
 let CommentsService = CommentsService_1 = class CommentsService {
     constructor(commentModel) {
         this.commentModel = commentModel;
@@ -92,6 +93,6 @@ let CommentsService = CommentsService_1 = class CommentsService {
 exports.CommentsService = CommentsService;
 exports.CommentsService = CommentsService = CommentsService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, mongoose_1.InjectModel)(Comment.name)),
+    __param(0, (0, mongoose_1.InjectModel)(comment_schema_1.Comment.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], CommentsService);

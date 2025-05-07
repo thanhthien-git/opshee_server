@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { CommentsService } from '../comments.service';
-import { ROLE } from 'src/constants/role';
+import { ROLE } from '../../../constants/role';
 
 @Injectable()
 export class IsOwnerComment implements CanActivate {

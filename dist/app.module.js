@@ -23,7 +23,7 @@ const token_module_1 = require("./modules/token/token.module");
 const orders_module_1 = require("./modules/orders/orders.module");
 const stocks_module_1 = require("./modules/stocks/stocks.module");
 const cart_module_1 = require("./modules/cart/cart.module");
-const comments_service_1 = require("./modules/comments/comments.service");
+const comments_module_1 = require("./modules/comments/comments.module");
 const PROTECTED_ROUTES = ['user', 'orders', 'cart', 'comments'];
 let AppModule = class AppModule {
     configure(consumer) {
@@ -54,7 +54,7 @@ exports.AppModule = AppModule = __decorate([
             orders_module_1.OrdersModule,
             stocks_module_1.StocksModule,
             cart_module_1.CartModule,
-            comments_service_1.CommentsService,
+            comments_module_1.CommentsModule,
         ],
     })
 ], AppModule);
